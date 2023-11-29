@@ -1,0 +1,4 @@
+{
+    "users": {
+        "Eduardo": {"username": "Eduardo", "first_name": "Eduardo", "second_name": "Neves", "password": "250299", "age": 24, "posts": [], "follows": []}, 
+        "teste": {"username": "teste", "first_name": "teste", "second_name": "teste", "password": "teste", "age": 24, "posts": [], "follows": []}}}
