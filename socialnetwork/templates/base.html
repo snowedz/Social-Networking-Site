@@ -17,11 +17,13 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="">Inicio</a>
+                <a class="nav-link active" aria-current="page" href="/home">Inicio</a>
               </li>
+              {% if request.user.is_authenticated %}
               <li class="nav-item">
-                <a class="nav-link" href="#">Sobre</a>
+                <a class="nav-link" href="#">Amigos</a>
               </li>
+              {% endif %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Dropdown
@@ -44,8 +46,8 @@
           </div>
         </div>
       </nav>
-      <script type="text/javascript" src="{% static "main.js" %}"/>
     {% block content %}
     {% endblock %}
+    <script type="text/javascript" src="{% static "main.js" %}"></script>
   </body>
 </html>
