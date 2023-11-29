@@ -1,4 +1,4 @@
-# Projeto-de-software
+# Social Networking Site
 Projeto de software (Programação 3)
 Software Project 
 
