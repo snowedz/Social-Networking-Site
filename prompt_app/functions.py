@@ -1,7 +1,7 @@
 import json
 from classes import *
 
-JSON_FILE = 'C:/Users/marsh/OneDrive/Área de Trabalho/Faculdade/P3/prompt_app/users.json'
+JSON_FILE = 'C:/Users/marsh/Desktop/FACULDADE/P3/frostbook/prompt_app/users.json'
 user_list_file = open(JSON_FILE)
 user_list = json.load(user_list_file)
 
@@ -24,8 +24,10 @@ def create_user(Profile):
 
 def create_post(Posts,Profile):
     post = input('O que deseja postar? ')
-    Profile.posts = Posts(Profile,content=post,image=None,like_conunt=0,comments = None)
-    return Profile.posts
+    post = Posts(Profile,content=post,image=None, like_count = 0 ,comments = None)
+    post = vars(post)
+    Profile.posts.append(post)
+    save_users(Profile)
 
 def view_post(Profile):
     n_post = (len(Profile.posts))
@@ -33,7 +35,7 @@ def view_post(Profile):
         print("Você não tem nenhum post")
     else:
         for posts in Profile.posts:
-            print(f"{posts}")
+            print(f"{posts['content']}")
     return
 
 def see_folows(Profile):
@@ -80,7 +82,7 @@ def menu(Profile):
         print(f"{n+1} - {menu_options[n]}")
     choice = input("O que deseja fazer? ")
     if choice == '1':
-        return create_post(Profile)
+        return create_post(Posts,Profile)
     elif choice == '2':
         return view_post(Profile)
     elif choice == '3':
