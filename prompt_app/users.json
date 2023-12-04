@@ -1,4 +1,1 @@
-{
-    "users": {
-        "Eduardo": {"username": "Eduardo", "first_name": "Eduardo", "second_name": "Neves", "password": "250299", "age": 24, "posts": [], "follows": []}, 
-        "teste": {"username": "teste", "first_name": "teste", "second_name": "teste", "password": "teste", "age": 24, "posts": [], "follows": []}}}
+{"users": {"teste2": {"username": "teste2", "first_name": "teste2", "second_name": "teste2", "password": "123456789", "age": 24, "posts": [], "follows": []}, "snowedz": {"username": "snowedz", "first_name": "Eduardo", "second_name": "Neves", "password": "250299", "age": 24, "posts": [], "follows": ["teste2", "dudagata"]}, "dudagata": {"username": "dudagata", "first_name": "duda", "second_name": "gata", "password": "123", "age": 17, "posts": [], "follows": []}}}

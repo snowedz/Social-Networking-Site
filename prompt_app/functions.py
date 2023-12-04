@@ -1,7 +1,7 @@
 import json
 from classes import *
 
-JSON_FILE = 'C:/Users/marsh/Desktop/FACULDADE/P3/frostbook/prompt_app/users.json'
+JSON_FILE = 'C:/Users/marsh/OneDrive/Área de Trabalho/Faculdade/P3/prompt_app/users.json'
 user_list_file = open(JSON_FILE)
 user_list = json.load(user_list_file)
 
@@ -19,12 +19,8 @@ def create_user(Profile):
     posts = []
     follows = []
     user = Profile(username=username,first_name=first_name,second_name=second_name,password=password,age=age,posts=posts,follows=follows)
-    save = vars(user)
-    user_list['users'][user.username] = save
-    print(user_list)
-    with open(JSON_FILE,'w',encoding='utf-8') as save_user:
-        json.dump(user_list, save_user)
-    return user
+    save_users(user)
+    return
 
 def create_post(Posts,Profile):
     post = input('O que deseja postar? ')
@@ -32,7 +28,8 @@ def create_post(Posts,Profile):
     return Profile.posts
 
 def view_post(Profile):
-    if Profile.posts.index() == 0:
+    n_post = (len(Profile.posts))
+    if n_post == 0:
         print("Você não tem nenhum post")
     else:
         for posts in Profile.posts:
@@ -40,7 +37,8 @@ def view_post(Profile):
     return
 
 def see_folows(Profile):
-    if Profile.follows.index() == 0:
+    n_follows = len(Profile.follows)
+    if n_follows == 0:
         print("Você não segue ninguém")
     else:
         print('Lista de pessoas que você segue ')
@@ -49,14 +47,13 @@ def see_folows(Profile):
 
 def add_follow(Profile):
     list_users()
-    print("\n")
-    select = input("Que usuário deseja seguir ?")
+    select = input("Que usuário deseja seguir? ")
     try:
-        Profile.follows = select
+        Profile.follows.append(select)
+        save_users(Profile)
+        return
     except:
         print('Usuário não encontrado')
-    
-    
 
 
 def list_users():
@@ -66,8 +63,38 @@ def list_users():
         print(userlist)
     return
 
-def menu():
+def login():
+    username = input('Usuário: ')
+    password = input('Senha: ')
+    if username in user_list['users'] and password == user_list['users'][username]['password']:
+        user = user_list['users'][username]
+        user = Profile(user['username'],user["first_name"],user["second_name"],user["password"],user['age'],user['posts'],user['follows'])
+        return user
+    else:
+        print('Tente novamente')
+        return login()
+
+def menu(Profile):
     menu_options = ['Criar post','Ver posts','Listar Seguindo','Seguir usuários','Sair']
-    for n in range(1,menu_options):
-        print(f"{n} - {menu_options[n]}")
+    for n in range(0,5):
+        print(f"{n+1} - {menu_options[n]}")
     choice = input("O que deseja fazer? ")
+    if choice == '1':
+        return create_post(Profile)
+    elif choice == '2':
+        return view_post(Profile)
+    elif choice == '3':
+        return see_folows(Profile)
+    elif choice == '4':
+        return add_follow(Profile)
+    elif choice == '5':
+        print('Saindo')
+        return
+    
+
+def save_users(Profile):
+    save = vars(Profile)
+    user_list['users'][Profile.username] = save
+    with open(JSON_FILE,'w',encoding='utf-8') as save_user:
+        json.dump(user_list, save_user)
+    return Profile

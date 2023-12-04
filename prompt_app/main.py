@@ -2,19 +2,19 @@ from functions import *
 
 welcome()
 
-welcome_answer = input('Digite Y para Sim | Digite N para criar uma conta | Digite Q para sair ')
+while True:
+    welcome_answer = input('Digite L para ver o Logar | Digite C para criar uma conta | Digite M para ver o Menu | Digite Q para sair ')
+    if welcome_answer == 'm':
+        menu(user)
+    if welcome_answer == 'l':
+        user = login()
 
-print(f"Welcome Answer: {welcome_answer}")
+    elif welcome_answer == 'c':
+        user = create_user(Profile)
+        print('Usuário criado com sucesso')
+        print(f'username : {user.username}')
 
-if welcome_answer == 'y':
-    list_users()
-
-elif welcome_answer == 'n':
-    user = create_user(Profile)
-    print('Usuário criado com sucesso')
-    print(f'usuario: {user.username}')
-
-elif welcome_answer == 'q':
-    print('Até a próxima')
-    pass
+    elif welcome_answer == 'q':
+        print('Até a próxima')
+        break
 
