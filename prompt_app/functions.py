@@ -7,7 +7,9 @@ user_list = json.load(user_list_file)
 
 
 def welcome():
-    print("Seja bem vindo ao FrostBook \nJá tem uma conta?")
+    print("\n")
+    print("Seja bem vindo ao FrostBook \nJá tem uma conta? \n")
+
 
         
 def create_user(Profile):
@@ -20,7 +22,7 @@ def create_user(Profile):
     follows = []
     user = Profile(username=username,first_name=first_name,second_name=second_name,password=password,age=age,posts=posts,follows=follows)
     save_users(user)
-    return
+    return user
 
 def create_post(Posts,Profile):
     post = input('O que deseja postar? ')
@@ -35,7 +37,7 @@ def view_post(Profile):
         print("Você não tem nenhum post")
     else:
         for posts in Profile.posts:
-            print(f"{posts['content']}")
+            print(f"{posts['content']} -> Curtidas: {posts['like_count']} -> Comentários: {posts['comments']}\n")
     return
 
 def see_folows(Profile):
@@ -48,22 +50,25 @@ def see_folows(Profile):
             print(f"- {follows}")
 
 def add_follow(Profile):
-    list_users()
+    userlist = list_users()
     select = input("Que usuário deseja seguir? ")
-    try:
+    if select in userlist and select != Profile.username:
         Profile.follows.append(select)
         save_users(Profile)
         return
-    except:
+    if select == Profile.username:
+        print("Você não pode seguir a si próprio")
+    else:
         print('Usuário não encontrado')
 
 
 def list_users():
     options = []
-    for userlist in user_list['users']:
-        options.append(user_list)
-        print(userlist)
-    return
+    if len(user_list) != 0:
+        for userlist in user_list['users']:
+            options.append(user_list)
+            print(f'{userlist}')
+        return userlist
 
 def login():
     username = input('Usuário: ')

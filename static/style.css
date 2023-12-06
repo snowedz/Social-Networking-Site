@@ -1,3 +1,8 @@
 body {
     background-color: grey !important;
 }
+
+.card .card-md {
+    display:flex;
+    margin-left: 20rem;
+}
