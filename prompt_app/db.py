@@ -114,7 +114,7 @@ def login_user(username,password):
         for row in result:
             userid,username,fname,lname,pword,bday,email,gender,followers,friends = row
         if password == pword:
-            print(f'Usuário logado')
+            print(f'Usuário logado\n')
             user = Profile(username,fname,lname,pword,bday,email,gender)
             return user
         conn.close()
@@ -159,22 +159,81 @@ def general_search(type,param,search):
     result = cursor.fetchone()
           
     if result:
-        print(f'{type} encontrado : {(result[0])}')
+        # print(f'{type} encontrado : {(result[0])}')
         return result[0]
         conn.close()
+    else:
+        return 0
 
 def insert_follower(myuser,target):
      conn = sqlite3.connect('fb.db')
      cursor = conn.cursor()
+     
+     existing_followers = '''SELECT followers FROM users WHERE username = ? '''
+     cursor.execute(existing_followers,(target,))
+     existing_followers = cursor.fetchone()
 
-     query = '''UPDATE users
-        SET followers = ?
-        WHERE username = ?;'''
-     cursor = cursor.execute(query,(myuser,target))
-     result = cursor.fetchone()
-     if result:
-        print(f"{target} seguido com sucesso.")
+     if existing_followers[0] != None:
+        existing_followers = existing_followers[0]
+        updated_followers = f"{existing_followers}, {myuser}"
+
+        query = '''UPDATE users
+            SET followers = ?
+            WHERE username = ?;'''
+        try:
+            cursor = cursor.execute(query,(updated_followers,target))
+            result = cursor.fetchone()
+            conn.commit()
+        except sqlite3.Error as e:
+            print(e)
+     else:
+         query = '''UPDATE users
+             SET followers = ?
+             WHERE username = ?;'''
+         try:
+             cursor = cursor.execute(query,(myuser,target))
+             result = cursor.fetchone()
+             conn.commit()
+         except sqlite3.Error as e:
+             print(e)
+
+
+def delete_user(userid):
+    conn = sqlite3.connect('fb.db')
+    cursor = conn.cursor()
+    query = '''DELETE FROM users
+        WHERE userid = ?'''
+    try:
+        cursor = cursor.execute(query,(userid,))
+        print(f"Usuário deletado com sucesso.")
         conn.commit()
         conn.close()
+    except sqlite3.Error as e:
+        print(e)
+
+
+
+def remove_follower(myuser,target):
+     conn = sqlite3.connect('fb.db')
+     cursor = conn.cursor()
+     
+     existing_followers = '''SELECT followers FROM users WHERE username = ? '''
+     cursor.execute(existing_followers,(target,))
+     existing_followers = cursor.fetchone()
+
+     if existing_followers[0] != 'None':
+        existing_followers = existing_followers[0]
+        updated_followers = existing_followers.replace(f', {myuser}','')
+
+        query = '''UPDATE users
+            SET followers = ?
+            WHERE username = ?;'''
+        try:
+            cursor = cursor.execute(query,(updated_followers,target))
+            result = cursor.fetchone()
+            conn.commit()
+        except sqlite3.Error as e:
+            print(e)
      else:
-        print("Erro")
+        print("Você não segue essa pessoa")
+

@@ -1,6 +1,6 @@
 from functions import *
-
-print('Bem vindo ao FrostBook')
+print('\n')
+print('-------------Bem vindo ao FrostBook-------------\n')
 print('Já tem uma conta?\n')
 user = welcome()
 while user != False:

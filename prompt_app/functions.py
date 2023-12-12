@@ -27,15 +27,22 @@ def welcome():
 
 def create_user(Profile):
     username = input('Digite o nome do usuário: ')
+    if general_search('username','username',username) !=0:
+        print('Usuário já existe')
+        return 
     first_name = input('Primeiro nome: ')
     second_name = input('Segundo nome: ')
     password = input('Senha: ')
     bday = input('Data de Nascimento: ')
     email = input('Digite seu email: ')
     gender = input('Genero: ')
+    if general_search('username','email',email):
+        print('Usuário já existe')
+        return  
     user = Profile(username,first_name,second_name,password,bday,email,gender)
     insert_user(user)
     return user
+
 
 def create_post(Posts,Profile):
     post = input('O que deseja postar? ')
@@ -65,11 +72,11 @@ def see_folows(Profile):
 def add_follow(Profile):
     list_users()
     select = input("Que usuário deseja seguir? ")
-    if search_user(select) == True:
+    if select != Profile.username:
         insert_follower(Profile.username,select)
         # save_users(Profile)
         return
-    if select == Profile.username:
+    elif select == Profile.username:
         print("Você não pode seguir a si próprio")
     else:
         print('Usuário não encontrado')
