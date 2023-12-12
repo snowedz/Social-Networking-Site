@@ -1,12 +1,12 @@
 class Profile():
-    def __init__(self, username, first_name, second_name, password, age, posts,follows):
+    def __init__(self, username, first_name, second_name, password, bday, email, gender):
         self.username = username
         self.first_name = first_name
         self.second_name = second_name
         self.password = password
-        self.age = int(age)
-        self.posts = posts
-        self.follows = follows
+        self.email = email
+        self.bday = bday
+        self.gender = gender
 
 
 

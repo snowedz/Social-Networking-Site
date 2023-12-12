@@ -1,0 +1,13 @@
+body {
+    
+}
+
+.card .card-md {
+    display:flex;
+    margin-left: 20rem;
+}
+
+.btn {
+    max-width: 20rem;
+    background-color: lightblue;
+}
