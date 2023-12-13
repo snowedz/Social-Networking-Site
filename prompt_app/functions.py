@@ -1,6 +1,7 @@
-import json
 from classes import *
 from db import *
+
+######### Display welcome menu and menu options #########
 
 def welcome():
     print('1 -> Logar\n2 -> Criar uma conta\n3 -> Reativar Usuário \n4 -> Sair\n')
@@ -29,6 +30,7 @@ def welcome():
         print('-> Opção errada, tente novamente')
         return welcome()
 
+######### Menu Options #########
 
 def menu(Profile):
     main_menu = ['Perfil','Posts','Seguidores','Eventos','Chat','Grupos','Sair']

@@ -1,7 +1,7 @@
 import sqlite3
 from classes import *
 
-######### Insert Functions
+######### Insert Functions #########
         
 def insert_user(Profile):
      username = input('Digite o nome do usuário: ')
@@ -107,9 +107,10 @@ def insert_groups(Groups):
         conn.close()
      else:
         print("Erro")
-#########
 
-######### Search Functions
+######### ------ ######### 
+
+######### Search Functions #########
 
 def general_search(type,param,search,table):
     conn = sqlite3.connect('fb.db')
@@ -294,8 +295,9 @@ def view_events():
     else:
         print("Não há eventos no momento")
 
-#########
-######### Delete Functions
+######### ------ ######### 
+
+######### Delete Functions #########
 
 def delete_user(userid):
     conn = sqlite3.connect('fb.db')
@@ -362,8 +364,10 @@ def remove_follower(myuser,target):
      else:
         print("Você não segue essa pessoa")
 
-#########
-######### Edit
+######### ------ ######### 
+
+######### Edit Functions #########
+
 def edit_profile(username,param,value):
     conn = sqlite3.connect('fb.db')
     cursor = conn.cursor()
@@ -444,7 +448,10 @@ def activate_user(username):
     conn.close()
     print('Usuário ativado')
     return
-######### Misc
+
+######### ------ #########
+
+######### Misc Functions #########
 
 def login_user():
     username = input('Usuário: ')
@@ -479,7 +486,6 @@ def login_user():
         conn.close()
         return login_user()
 
-
 def list_users():
     userlist = []
     conn = sqlite3.connect('fb.db')
@@ -494,10 +500,9 @@ def list_users():
     conn.close()
     return userlist
 
+######### ------ #########
 
-
-
-####### Chat Function ######
+######### Chat Function #########
 
 def see_messages(username):
      conn = sqlite3.connect('fb.db')
@@ -517,7 +522,6 @@ def see_messages(username):
              if target == username:
                 content = f'Chat de {user}: {content}'
                 print(content)
-
 
 def send_message(username,target,message):
      conn = sqlite3.connect('fb.db')
@@ -551,8 +555,6 @@ def send_message(username,target,message):
          conn.commit()
          conn.close()
     
-
-
 def edit_messages(username,target):
      conn = sqlite3.connect('fb.db')
      cursor = conn.cursor()

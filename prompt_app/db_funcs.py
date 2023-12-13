@@ -1,5 +1,6 @@
 import sqlite3
 
+## funcions just to initialize and Manage the DBs
 
 # Create Tables
 # def create_table():
