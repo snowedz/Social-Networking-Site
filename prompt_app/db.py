@@ -30,13 +30,11 @@ def insert_user(Profile):
         print("Erro")
 
 def insert_post(Posts,Profile):
-     post = input('O que deseja postar? ')
-     post = Posts(Profile,content=post,image=None, like_count = 0 ,comments = None)
      userid = general_search('userid','username',Profile.username)
      conn = sqlite3.connect('fb.db')
      cursor = conn.cursor()
      query = '''INSERT INTO posts (userid, content,image,like_count,comments) VALUES (?,?,?,?,?)'''
-     cursor = cursor.execute(query,(userid,post.content,post.image,post.like_count,post.comments))
+     cursor = cursor.execute(query,(userid,Posts.content,Posts.image,Posts.like_count,Posts.comments))
      if cursor.rowcount > 0:
         print(f"Post criado com sucesso.")
         conn.commit()
@@ -168,7 +166,7 @@ def show_profile(username):
         print(f'Nome: {fname[+2:-1]} {lname[+2:-1]}')
         print(f'Data de nascimento: {bday[+2:-1]}')
         print(f'Email: {email[+2:-1]}')
-        print(f'Gênero: {gender[+2:-1]}')
+        print(f'Gênero: {gender[+2:-2]}')
 
     # if result:
     #     print(f'Usuário encontrado : {username}')
@@ -177,11 +175,36 @@ def show_profile(username):
     # else:
     #     print(f'Usuário não encontrado')
     #     conn.close()
-# def view_posts(Profile):
-#     if post
 
+def view_posts():
+    conn = sqlite3.connect('fb.db')
+    cursor = conn.cursor()
 
+    query = f'''SELECT * FROM posts'''
+    cursor = cursor.execute(query)
+    result = cursor.fetchall()
+    if result:
+        for row in result:
+            postid,userid,content,image,comments,like_count = row
+            query_2 = f''' SELECT fname,lname FROM users WHERE userid = ?'''
+            cursor_2 = cursor.execute(query_2,(userid,))
+            result_2 = cursor.fetchall()
+            for row_2 in result_2:
+                fname,lname = row_2
+            print(f'{fname} {lname} postou :   {content}')
+    # print(result)
+def my_posts(userid):
+    conn = sqlite3.connect('fb.db')
+    cursor = conn.cursor()
 
+    query = f'''SELECT postid,content FROM posts 
+        WHERE userid = ?'''
+    cursor = cursor.execute(query,(userid,))
+    result = cursor.fetchall()
+    for row in result:
+        postid,content = row
+        print(f'ID do Post: {postid} - {content}')
+    return
 
 #########
 ######### Delete Functions
@@ -279,7 +302,7 @@ def activate_user(username):
 
 def login_user():
     username = input('Usuário: ')
-    password = input('Senha: \n')
+    password = input('Senha: ')
     conn = sqlite3.connect('fb.db')
     cursor = conn.cursor()
 
