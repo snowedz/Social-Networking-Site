@@ -95,6 +95,18 @@ def insert_event(Events):
         conn.close()
      else:
         print("Erro")
+
+def insert_groups(Groups):
+     conn = sqlite3.connect('fb.db')
+     cursor = conn.cursor()
+     query = '''INSERT INTO groups (group_name, group_desc, creation_date, group_owner, group_members) VALUES (?,?,?,?,?)'''
+     cursor = cursor.execute(query,(Groups.name,Groups.description, Groups.date, Groups.owner, Groups.owner))
+     if cursor.rowcount > 0:
+        print(f"Grupo criado com sucesso.")
+        conn.commit()
+        conn.close()
+     else:
+        print("Erro")
 #########
 
 ######### Search Functions
@@ -147,6 +159,22 @@ def my_events(username):
             print(f'ID do Evento: {eventid}\n{event_name}\n{event_desc}\nLocal: {event_location}\nData: {event_date} as {event_time}')
     else:
         print("Não há eventos no momento")
+
+def my_groups(username):
+    conn = sqlite3.connect('fb.db')
+    cursor = conn.cursor()
+
+    query = '''SELECT * FROM groups WHERE group_owner IN (?) OR group_member IN (?);'''
+
+    cursor = cursor.execute(query,(username,username))
+    result = cursor.fetchall()
+          
+    if len(result) != 0:
+        for row in result:
+            groupid,group_name,group_desc,creation_date,group_owner,group_members = row
+            print(f'ID do Grupo: {groupid}\n{group_name}\n{group_desc}\nCriado em: {creation_date}')
+    else:
+        print("Você não participa de nenhum grupo no momento")
 
 def get_following(username):
     conn = sqlite3.connect('fb.db')
@@ -221,6 +249,21 @@ def view_posts():
             print(f'{fname} {lname} postou :   {content}')
     # print(result)
 
+def view_groups():
+    conn = sqlite3.connect('fb.db')
+    cursor = conn.cursor()
+
+    query = f'''SELECT * FROM groups'''
+    cursor = cursor.execute(query)
+    result = cursor.fetchall()
+    if len(result) != 0:
+        for row in result:
+            groupid,group_name,group_desc,creation_date,group_owner,group_members = row
+            print(f'ID do Grupo: {groupid}\n{group_name}\n{group_desc}\nCriado em: {creation_date}')
+    else:
+        print("Não há grupos no momento")
+
+
 def my_posts(userid):
     conn = sqlite3.connect('fb.db')
     cursor = conn.cursor()
@@ -275,7 +318,21 @@ def delete_event(eventid,username):
         AND event_owner = ?'''
     try:
         cursor = cursor.execute(query,(eventid,username))
-        print(f"Evento deletado com sucesso.")
+        print(f"Evento excluido com sucesso.")
+        conn.commit()
+        conn.close()
+    except sqlite3.Error as e:
+        print(e)
+
+def delete_group(groupid,username):
+    conn = sqlite3.connect('fb.db')
+    cursor = conn.cursor()
+    query = '''DELETE FROM groups
+        WHERE groupid = ?
+        AND group_owner = ?'''
+    try:
+        cursor = cursor.execute(query,(groupid,username))
+        print(f"Grupo excluido com sucesso.")
         conn.commit()
         conn.close()
     except sqlite3.Error as e:
@@ -347,6 +404,21 @@ def edit_event(eventid,username,param,value):
     conn.commit()
     conn.close()
     print('Evento alterado com sucesso')
+    return
+
+def edit_group(groupid,username,param,value):
+    conn = sqlite3.connect('fb.db')
+    cursor = conn.cursor()
+
+    query = f''' UPDATE groups
+        SET {param} = ?
+        WHERE groupid = ?
+        AND group_owner = ?;'''
+    
+    cursor = cursor.execute(query,(value,groupid,username))
+    conn.commit()
+    conn.close()
+    print('group alterado com sucesso')
     return
 
 def deactivate_user(username):
