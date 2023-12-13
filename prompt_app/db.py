@@ -201,11 +201,13 @@ def my_posts(userid):
         WHERE userid = ?'''
     cursor = cursor.execute(query,(userid,))
     result = cursor.fetchall()
+    if len(result) == 0:
+        print('Você não tem nenhum post')
+        return 0;
     for row in result:
         postid,content = row
         print(f'ID do Post: {postid} - {content}')
-    return
-
+    return 1
 #########
 ######### Delete Functions
 
@@ -262,14 +264,15 @@ def edit_profile(username,param,value):
     print('Campo alterado com sucesso')
     return
 
-def edit_post(postid,param,value):
+def edit_post(postid,userid,param,value):
     conn = sqlite3.connect('fb.db')
     cursor = conn.cursor()
 
     query = f''' UPDATE posts
         SET {param} = ?
-        WHERE postid = ?;'''
-    cursor = cursor.execute(query,(value,postid))
+        WHERE postid = ?
+        AND userid = ?;'''
+    cursor = cursor.execute(query,(value,postid,userid))
     conn.commit()
     conn.close()
     print('Post alterado com sucesso')
@@ -315,17 +318,23 @@ def login_user():
         for row in result:
             userid,username,fname,lname,pword,bday,email,gender,followers,friends,is_active = row
         if password == pword and is_active == 1:
-            print(f'-> Usuário logado\n')
+            print('\n')
+            print(f'-> Usuário logado')
             user = Profile(username,fname,lname,pword,bday,email,gender)
             return user
         elif is_active == 0:
+            print('\n')
             print('Usuário desativado')
+            print('\n')
             return False
         conn.close()
         
     else:
+        print('\n')
         print(f'Usuário não encontrado')
+        print('\n')
         conn.close()
+        return login_user()
 
 
 def list_users():

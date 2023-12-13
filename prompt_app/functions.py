@@ -3,8 +3,9 @@ from classes import *
 from db import *
 
 def welcome():
-    print('1 -> Logar\n2 -> Criar uma conta\n3 -> Sair\n')
+    print('1 -> Logar\n2 -> Criar uma conta\n3 -> Reativar Usuário \n4 -> Sair\n')
     welcome_answer = input('Escolha sua opção: ')
+    print('\n')
     if welcome_answer == '1': 
         user = login_user()
         return user
@@ -16,48 +17,67 @@ def welcome():
             except NameError:
                 print("Você não está logado")
                 welcome()
-
     if welcome_answer == '3':
+        user = input('Digite o username: ')
+        activate_user(user)
+        print('faça o login')
+        return login_user()
+        
+    if welcome_answer == '4':
         print('Saindo')
         return False
+    else:
+        print('Opção errada, tente novamente')
+        return welcome()
 
 
 def menu(Profile):
+    print('\n')
     main_menu = ['Perfil','Posts','Seguidores','Sair']
     menu_options = ['Ver Perfil','Editar Perfil','Ver Seguidores','Seguir usuários','Ver posts','Criar Posts','Desativar conta','Sair']
     while True:
         for n in range(0,4):
             print(f"{n+1} - {main_menu[n]}")
+        print('\n')
         choice = input("O que deseja fazer? ")
         if choice == '1':
+            print('\n')
             menu_options = ['Ver Perfil','Editar Perfil','Desativar Conta','Menu Anterior']
             for n in range(0,4):
                 print(f"{n+1} - {menu_options[n]}")
+            print('\n')
             choice_2 = input("Escolha uma opção: ")
+            print('\n')
             if choice_2 == '1':
                 show_profile(Profile.username)
+                print('\n')
                 return menu(Profile)
             elif choice_2 == '2':
                 choice_3 = input('1 - Primeiro Nome\n2 - Segundo Nome\n3 - Data de Nascimento\n4 - Gênero\n5 - Endereço de Email\n\nO que deseja mudar?')
                 if choice_3 == '1':
                     choice_4 = input('novo Primeiro Nome : ')
                     edit_profile(Profile.username,'fname',choice_4)
+                    print('\n')
                     return menu(Profile)
                 elif choice_3 == '2':
                     choice_4 = input('Novo Segundo Nome : ')
                     edit_profile(Profile.username,'lname',choice_4)
+                    print('\n')
                     return menu(Profile)
                 elif choice_3 == '3':
                     choice_4 = input('Nova Data de nascimento : ')
                     edit_profile(Profile.username,'bday',choice_4)
+                    print('\n')
                     return menu(Profile)
                 elif choice_3 == '4':
                     choice_4 = input('Nova Gênero : ')
                     edit_profile(Profile.username,'bday',choice_4)
+                    print('\n')
                     return menu(Profile)
                 elif choice_3 == '5':
                     choice_4 = input('Novo Endereço de Email : ')
                     edit_profile(Profile.username,'email',choice_4)
+                    print('\n')
                     return menu(Profile)
             
             elif choice_2 == '3':
@@ -65,10 +85,13 @@ def menu(Profile):
             return menu(Profile)
 
         elif choice == '2':
+            print('\n')
             menu_options = ['Ver posts','Criar posts','Editar posts','Menu Anterior']
             for n in range(0,4):
                 print(f"{n+1} - {menu_options[n]}")
+            print('\n')
             choice_2 = input("Escolha uma opção: ")
+            print('\n')
             if choice_2 == '1':
                 view_posts()
                 return menu(Profile)
@@ -80,20 +103,23 @@ def menu(Profile):
                 return menu(Profile)
             
             elif choice_2 == '3':
+                print('\n')
                 userid = general_search('userid','username',Profile.username)
-                my_posts(userid)
-                choice_3 = input('Qual post você quer editar? ')
-                choice_4 = input('1 - Editar Texto\n2 - Editar Midia')
-                if choice_4 == '1':
-                    choice_4 = 'content'
-                    choice_5 = input('Escreva -> ')
-                    edit_post(choice_3,choice_4,choice_5)
-                elif choice_4 == '2':
-                    choice_4 = 'image'
-                    choice_5 = input('Link da midia -> ')
-                    edit_post(choice_3,choice_4,choice_5)
-                return menu(Profile)
-            elif choice_2 == '3':
+                if my_posts(userid) == 1:
+                    choice_3 = input('Qual post você quer editar? ')
+                    print('\n')
+                    choice_4 = input('1 - Editar Texto\n2 - Editar Midia')
+                    print('\n')
+                    if choice_4 == '1':
+                        choice_4 = 'content'
+                        choice_5 = input('Escreva -> ')
+                        edit_post(choice_3,userid,choice_4,choice_5)
+                    elif choice_4 == '2':
+                        choice_4 = 'image'
+                        choice_5 = input('Link da midia -> ')
+                        edit_post(choice_3,userid,choice_4,choice_5)
+                    return menu(Profile)
+            elif choice_2 == '4':
                 return menu(Profile) 
 
         elif choice == '3':
@@ -101,6 +127,7 @@ def menu(Profile):
             for n in range(0,4):
                 print(f"{n+1} - {menu_options[n]}")
             choice_2 = input("Escolha uma opção: ")
+            print('\n')
             
             if choice_2 == '1':
                 get_followers(Profile.username)
