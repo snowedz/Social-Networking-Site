@@ -18,3 +18,18 @@ class Posts():
         self.like_count = int(like_count)
         self.comments = comments
 
+class Events():
+    def __init__(self, Profile,name,description,location,date,time):
+        self.owner = Profile.username
+        self.name = name
+        self.description = description
+        self.location = location
+        self.date = date
+        self.time = time
+
+class Groups():
+    def __init__(self, Profile,name,description,date):
+        self.owner = Profile.username
+        self.name = name
+        self.description = description
+        self.date = date

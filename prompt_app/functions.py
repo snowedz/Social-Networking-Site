@@ -33,10 +33,10 @@ def welcome():
 
 def menu(Profile):
     print('\n')
-    main_menu = ['Perfil','Posts','Seguidores','Sair']
+    main_menu = ['Perfil','Posts','Seguidores','Eventos','Chat','Sair']
     menu_options = ['Ver Perfil','Editar Perfil','Ver Seguidores','Seguir usuários','Ver posts','Criar Posts','Desativar conta','Sair']
     while True:
-        for n in range(0,4):
+        for n in range(len(main_menu)):
             print(f"{n+1} - {main_menu[n]}")
         print('\n')
         choice = input("O que deseja fazer? ")
@@ -87,7 +87,7 @@ def menu(Profile):
         elif choice == '2':
             print('\n')
             menu_options = ['Ver posts','Criar posts','Editar posts','Menu Anterior']
-            for n in range(0,4):
+            for n in range(len(menu_options)):
                 print(f"{n+1} - {menu_options[n]}")
             print('\n')
             choice_2 = input("Escolha uma opção: ")
@@ -124,7 +124,7 @@ def menu(Profile):
 
         elif choice == '3':
             menu_options = ['Ver seguidores','Ver quem você segue', 'Seguir usuários', 'Menu Anterior']
-            for n in range(0,4):
+            for n in range(len(menu_options)):
                 print(f"{n+1} - {menu_options[n]}")
             choice_2 = input("Escolha uma opção: ")
             print('\n')
@@ -143,6 +143,94 @@ def menu(Profile):
                 return menu(Profile)
 
         elif choice == '4':
+            menu_options = ['Ver eventos','Criar eventos','Gerenciar eventos', 'Sair']
+            for n in range(len(menu_options)):
+                print(f"{n+1} - {menu_options[n]}")
+            choice_2 = input("Escolha uma opção: ")
+            print('\n')
+
+            if choice_2 == '1':
+                view_events()
+                return menu(Profile)
+            
+            elif choice_2 == '2':
+                event_name = input('Nome do evento: ')
+                event_description = input('Descrição do evento: ')
+                event_location = input('Local do evento: ')
+                event_date = input('Data do evento: ')
+                event_time = input('Hora que vai acontecer(Formato: HH:MM): ')
+                Event = Events(Profile, event_name, event_description, event_location, event_date, event_time)
+                insert_event(Event)
+                return menu(Profile)
+            
+            elif choice_2 == '3':
+                menu_options = ['Ver meus eventos','Editar Evento','Convidar pessoas', 'Excluir evento','Menu']
+                for n in range(len(menu_options)):
+                    print(f"{n+1} - {menu_options[n]}")
+                choice_3 = input("Escolha uma opção: ")
+                    
+                if choice_3 == '1':
+                    my_events(Profile.username)
+                    
+                elif choice_3 == '2':
+                    my_events(Profile.username)
+                    eventid = input('ID do evento que deseja mudar: ')
+                    menu_options = ['Nome do evento','Descrição','Local','Data','Hora','sair']
+                    for n in range(len(menu_options)):
+                        print(f"{n+1} - {menu_options[n]}")
+                    choice_4 = input('O que deseja mudar? ')
+                    if choice_4 == '1':
+                        new_name = input('Novo nome do evento: ')
+                        edit_event(eventid,Profile.username,event_name,new_name)
+                    elif choice_4 == '2':
+                        new_desc = input('Nova descrição: ')
+                        edit_event(eventid,Profile.username,event_description,new_desc)
+                    elif choice_4 == '3':
+                        new_local = input('Nova localização: ')
+                        edit_event(eventid,Profile.username,event_location,new_local)
+                    elif choice_4 == '4':
+                        new_date = input('Nova data: ')
+                        edit_event(eventid,Profile.username,event_date,new_date)
+                    elif choice_4 == '4':
+                        new_time = input('Novo horário: ')
+                        edit_event(eventid,Profile.username,event_time,new_time)
+                    elif choice_4 == '5':
+                        menu(Profile)
+
+                elif choice_3 == '3':
+                    list_users()
+                    choice_4 = input('Qual usuário você quer convidar? ')
+                    # invite_users() ### need to implement notifications and accepting or decline instances
+                
+                elif choice_3 == '4':
+                    my_events()
+                    eventid = input('Qual ID do evento que você quer deletar? ')
+                    delete_event(eventid,Profile.username)
+                
+                elif choice_3 == '5':
+                    return menu(Profile)
+            
+            elif choice_2 == '4':
+                return menu(Profile)
+            
+
+
+
+        elif choice == '5':
+            menu_options = ['Ver conversas','Mandar mensagem','Menu anterior']
+            for n in range(len(menu_options)):
+                print(f"{n+1} - {menu_options[n]}")
+            choice_2 = input('Selecione uma opção: ')
+            if choice_2 == '1':
+                see_messages(Profile.username)
+                return menu(Profile)
+            elif choice_2 == '2':
+                list_users()
+                target = input('Para quem? ')
+                message = input('-> ')
+                send_message(Profile.username,target,message)
+                return menu(Profile)
+        elif choice == '6':
             print('Saindo')
             return False
     

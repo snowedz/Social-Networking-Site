@@ -1,24 +1,17 @@
 import sqlite3
 
 
-## Create User Table
-# def user_table():
+# Create Tables
+# def create_table():
 #     try:
 #         connection = sqlite3.connect('fb.db')
 #         cursor = connection.cursor()
 #         print('DB Iniciada')
 
-#         query = '''CREATE TABLE IF NOT EXISTS users (
-#             userid INTEGER PRIMARY KEY AUTOINCREMENT,
-#             username TEXT NOT NULL,
-#             fname TEXT NOT NULL,
-#             lname TEXT NOT NULL,
-#             pword TEXT NOT NULL,
-#             bday TEXT NOT NULL,
-#             email TEXT NOT NULL,
-#             gender TEXT,
-#             followers TEXT,
-#             friends TEXT );'''
+#         query = '''CREATE TABLE IF NOT EXISTS chat (
+#             chatid INTEGER PRIMARY KEY AUTOINCREMENT,
+#             chat_users TEXT NOT NULL,
+#             content TEXT NOT NULL);'''
 #         cursor.execute(query)
 #         cursor.close()
 
@@ -30,6 +23,7 @@ import sqlite3
 #         if connection:
 #                 connection.close()
 #                 print('DB connection closed')
+# create_table()
 
 # def posts_table():
 #     try:

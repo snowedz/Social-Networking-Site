@@ -5,7 +5,7 @@ from classes import *
         
 def insert_user(Profile):
      username = input('Digite o nome do usuário: ')
-     if general_search('username','username',username) !=0:
+     if general_search('username','username',username,'users') !=0:
          print('\n-> Usuário já existe\n')
          return 
      first_name = input('Primeiro nome: ')
@@ -14,7 +14,7 @@ def insert_user(Profile):
      bday = input('Data de Nascimento: ')
      email = input('Digite seu email: ')
      gender = input('Genero: ')
-     if general_search('username','email',email):
+     if general_search('username','email',email,'users'):
          print('Usuário já existe')
          return
      conn = sqlite3.connect('fb.db')
@@ -30,7 +30,7 @@ def insert_user(Profile):
         print("Erro")
 
 def insert_post(Posts,Profile):
-     userid = general_search('userid','username',Profile.username)
+     userid = general_search('userid','username',Profile.username,'users')
      conn = sqlite3.connect('fb.db')
      cursor = conn.cursor()
      query = '''INSERT INTO posts (userid, content,image,like_count,comments) VALUES (?,?,?,?,?)'''
@@ -84,15 +84,26 @@ def insert_follower(Profile):
         return
      print('Usuário não encontrado')
 
+def insert_event(Events):
+     conn = sqlite3.connect('fb.db')
+     cursor = conn.cursor()
+     query = '''INSERT INTO events (event_name, event_desc, event_location,event_date,event_time, event_owner, event_members) VALUES (?,?,?,?,?,?,?)'''
+     cursor = cursor.execute(query,(Events.name,Events.description, Events.location, Events.date, Events.time, Events.owner, Events.owner))
+     if cursor.rowcount > 0:
+        print(f"Evento criado com sucesso.")
+        conn.commit()
+        conn.close()
+     else:
+        print("Erro")
 #########
 
 ######### Search Functions
 
-def general_search(type,param,search):
+def general_search(type,param,search,table):
     conn = sqlite3.connect('fb.db')
     cursor = conn.cursor()
 
-    query = f'''SELECT {type} FROM users WHERE {param} = ?'''
+    query = f'''SELECT {type} FROM {table} WHERE {param} = ?'''
 
     cursor = cursor.execute(query,[search])
     result = cursor.fetchone()
@@ -120,6 +131,22 @@ def search_user(username):
     else:
         print(f'Usuário não encontrado')
         conn.close()
+
+def my_events(username):
+    conn = sqlite3.connect('fb.db')
+    cursor = conn.cursor()
+
+    query = '''SELECT * FROM events WHERE event_owner = ?'''
+
+    cursor = cursor.execute(query,[username])
+    result = cursor.fetchall()
+          
+    if len(result) != 0:
+        for row in result:
+            eventid,event_name,event_desc,event_location,event_date,event_time,event_owner,event_members = row
+            print(f'ID do Evento: {eventid}\n{event_name}\n{event_desc}\nLocal: {event_location}\nData: {event_date} as {event_time}')
+    else:
+        print("Não há eventos no momento")
 
 def get_following(username):
     conn = sqlite3.connect('fb.db')
@@ -193,6 +220,7 @@ def view_posts():
                 fname,lname = row_2
             print(f'{fname} {lname} postou :   {content}')
     # print(result)
+
 def my_posts(userid):
     conn = sqlite3.connect('fb.db')
     cursor = conn.cursor()
@@ -208,6 +236,21 @@ def my_posts(userid):
         postid,content = row
         print(f'ID do Post: {postid} - {content}')
     return 1
+
+def view_events():
+    conn = sqlite3.connect('fb.db')
+    cursor = conn.cursor()
+
+    query = f'''SELECT * FROM events'''
+    cursor = cursor.execute(query)
+    result = cursor.fetchall()
+    if len(result) != 0:
+        for row in result:
+            eventid,event_name,event_desc,event_location,event_date,event_time,event_owner,event_members = row
+            print(f'ID do Evento: {eventid}\n{event_name}\n{event_desc}\nLocal: {event_location}\nData: {event_date} as {event_time}')
+    else:
+        print("Não há eventos no momento")
+
 #########
 ######### Delete Functions
 
@@ -224,6 +267,19 @@ def delete_user(userid):
     except sqlite3.Error as e:
         print(e)
 
+def delete_event(eventid,username):
+    conn = sqlite3.connect('fb.db')
+    cursor = conn.cursor()
+    query = '''DELETE FROM events
+        WHERE eventid = ?
+        AND event_owner = ?'''
+    try:
+        cursor = cursor.execute(query,(eventid,username))
+        print(f"Evento deletado com sucesso.")
+        conn.commit()
+        conn.close()
+    except sqlite3.Error as e:
+        print(e)
 
 def remove_follower(myuser,target):
      conn = sqlite3.connect('fb.db')
@@ -276,6 +332,21 @@ def edit_post(postid,userid,param,value):
     conn.commit()
     conn.close()
     print('Post alterado com sucesso')
+    return
+
+def edit_event(eventid,username,param,value):
+    conn = sqlite3.connect('fb.db')
+    cursor = conn.cursor()
+
+    query = f''' UPDATE events
+        SET {param} = ?
+        WHERE eventid = ?
+        AND event_owner = ?;'''
+    
+    cursor = cursor.execute(query,(value,eventid,username))
+    conn.commit()
+    conn.close()
+    print('Evento alterado com sucesso')
     return
 
 def deactivate_user(username):
@@ -350,3 +421,73 @@ def list_users():
         userlist.append(*user)
     conn.close()
     return userlist
+
+
+
+
+####### Chat Function ######
+
+def see_messages(username):
+     conn = sqlite3.connect('fb.db')
+     cursor = conn.cursor()
+    ### Check if is there a chat
+     query = '''SELECT * FROM chat
+     WHERE chat_users LIKE  ?'''
+     cursor = conn.execute(query,('%' + username + '%',))
+     result = cursor.fetchall()
+     if result:
+         for row in result:
+             chatid,chat_users,content = row
+             user,target = chat_users.split(',')
+             if user == username:
+                content = f'Chat de {target}: {content}'
+                print(content)
+             if target == username:
+                content = f'Chat de {user}: {content}'
+                print(content)
+
+
+def send_message(username,target,message):
+     conn = sqlite3.connect('fb.db')
+     cursor = conn.cursor()
+
+     query_1 = '''SELECT fname,lname FROM users
+     WHERE username = ?'''
+     cursor = conn.execute(query_1,(username,))
+     user_fname = cursor.fetchone()
+     user_fname = (' '.join(user_fname))
+    ## Check if is there a chat
+     query_2 = '''SELECT * FROM chat
+     WHERE chat_users LIKE  ?'''
+     cursor = conn.execute(query_2,[f"{username}, {target}"])
+     result = cursor.fetchall()
+     if len(result) != 0:
+         for row in result:
+             chatid,chat_users,content = row
+             content = f'{content}\n-> {user_fname}: {message}'
+         query_3 =  f'''UPDATE chat
+         SET content = ?
+         WHERE chatid = ?;'''
+         
+         cursor = conn.execute(query_3,(content,chatid))
+         conn.commit()
+
+     elif len(result) == 0:
+         content = f'-> {user_fname}: {content}' 
+         query = '''INSERT INTO chat (chat_users,content) VALUES (?,?)'''
+         cursor = cursor.execute(query,(f"{username}, {target}",content))
+         conn.commit()
+         conn.close()
+    
+
+
+def edit_messages(username,target):
+     conn = sqlite3.connect('fb.db')
+     cursor = conn.cursor()
+    ### Check if is there a chat
+     query = '''UPDATE chat
+      SET chat_users = ?
+      WHERE chatid = ?;'''
+     cursor = conn.execute(query,(f'{username}, {target}','1'))
+     result = cursor.fetchall()
+     conn.commit()
