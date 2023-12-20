@@ -24,7 +24,7 @@ social interactions, content sharing, and network building.
 - [Prompt_app](https://github.com/snowedz/Social-Networking-Site/tree/main/prompt_app)
 - Instead of saving every data in json, I opted to use SQLite DB
 - For tests the SQLite3 module needs to be installed so make sure -> pip install sqlite3
-- Functions implemented is:
+- Functions implemented are:
     - User Account Management
     - Post Creation and Management
     - Follower System
