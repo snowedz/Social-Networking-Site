@@ -6,6 +6,7 @@ from db import *
 def welcome():
     print('1 -> Logar\n2 -> Criar uma conta\n3 -> Reativar Usuário \n4 -> Sair\n')
     welcome_answer = input('-> Escolha sua opção: ')
+    print('\n')
     if welcome_answer == '1': 
         user = login_user()
         return user
@@ -25,9 +26,11 @@ def welcome():
         
     if welcome_answer == '4':
         print('-> Saindo')
+        print('\n')
         return False
     else:
         print('-> Opção errada, tente novamente')
+        print('\n')
         return welcome()
 
 ######### Menu Options #########
@@ -39,11 +42,14 @@ def menu(Profile):
         for n in range(len(main_menu)):
             print(f"{n+1} - {main_menu[n]}")
         choice = input("-> O que deseja fazer? ")
+        print('\n')
         if choice == '1':
             menu_options = ['Ver Perfil','Editar Perfil','Desativar Conta','Menu Anterior']
             for n in range(0,4):
                 print(f"{n+1} - {menu_options[n]}")
+            print('\n')
             choice_2 = input("-> Escolha uma opção: ")
+            print('\n')
             if choice_2 == '1':
                 show_profile(Profile.username)
                 return menu(Profile)
@@ -120,6 +126,7 @@ def menu(Profile):
             for n in range(len(menu_options)):
                 print(f"{n+1} - {menu_options[n]}")
             choice_2 = input("-> Escolha uma opção: ")
+            print('\n')
 
             
             if choice_2 == '1':
@@ -140,6 +147,7 @@ def menu(Profile):
             for n in range(len(menu_options)):
                 print(f"{n+1} - {menu_options[n]}")
             choice_2 = input("-> Escolha uma opção: ")
+            print('\n')
 
 
             if choice_2 == '1':
@@ -161,6 +169,7 @@ def menu(Profile):
                 for n in range(len(menu_options)):
                     print(f"{n+1} - {menu_options[n]}")
                 choice_3 = input("-> Escolha uma opção: ")
+                print('\n')
                     
                 if choice_3 == '1':
                     my_events(Profile.username)
@@ -171,7 +180,9 @@ def menu(Profile):
                     menu_options = ['Nome do evento','Descrição','Local','Data','Hora','sair']
                     for n in range(len(menu_options)):
                         print(f"{n+1} - {menu_options[n]}")
+                    print('\n')
                     choice_4 = input('-> O que deseja mudar? ')
+                    print('\n')
                     if choice_4 == '1':
                         new_name = input('-> Novo nome do evento: ')
                         edit_event(eventid,Profile.username,'event_name',new_name)
@@ -193,11 +204,13 @@ def menu(Profile):
                 elif choice_3 == '3':
                     list_users()
                     choice_4 = input('-> Qual usuário você quer convidar? ')
+                    print('\n')
                     # invite_users() ### need to implement notifications and accepting or decline instances
                 
                 elif choice_3 == '4':
                     my_events()
                     eventid = input('-> Qual ID do evento que você quer deletar? ')
+                    print('\n')
                     delete_event(eventid,Profile.username)
                 
                 elif choice_3 == '5':

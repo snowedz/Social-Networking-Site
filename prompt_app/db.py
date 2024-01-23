@@ -173,9 +173,9 @@ def my_groups(username):
     if len(result) != 0:
         for row in result:
             groupid,group_name,group_desc,creation_date,group_owner,group_members = row
-            print(f'ID do Grupo: {groupid}\n{group_name}\n{group_desc}\nCriado em: {creation_date}')
+            print(f'ID do Grupo: {groupid}\n{group_name}\n{group_desc}\nCriado em: {creation_date}\n')
     else:
-        print("Você não participa de nenhum grupo no momento")
+        print("Você não participa de nenhum grupo no momento\n")
 
 def get_following(username):
     conn = sqlite3.connect('fb.db')
@@ -186,10 +186,10 @@ def get_following(username):
     result = cursor.fetchall()
     if result:
         following_users = [user[0] for user in result]
-        print(f"Você segue esses perfis: {', '.join(following_users)}")
+        print(f"Você segue esses perfis: {', '.join(following_users)}\n")
         return conn.close()
     else:
-        print(f'Você não segue ninguém')
+        print(f'Você não segue ninguém\n')
         return conn.closer()
 
 def get_followers(username):
@@ -203,9 +203,9 @@ def get_followers(username):
           
     if None not in result[0]:
         user_followers = [user[0] for user in result]
-        print(f"Estes perfis seguem você: {', '.join(user_followers)}")
+        print(f"Estes perfis seguem você: {', '.join(user_followers)}\n")
     else:
-        print(f'Você não é seguido por ninguém')
+        print(f'Você não é seguido por ninguém\n')
 
 def show_profile(username):
     conn = sqlite3.connect('fb.db')
@@ -223,6 +223,7 @@ def show_profile(username):
         print(f'Data de nascimento: {bday[+2:-1]}')
         print(f'Email: {email[+2:-1]}')
         print(f'Gênero: {gender[+2:-2]}')
+        print('\n')
 
     # if result:
     #     print(f'Usuário encontrado : {username}')
@@ -249,7 +250,7 @@ def view_posts():
                 fname,lname = row_2
             print(f'{fname} {lname} postou :   {content}')
     # print(result)
-
+    print('\n')
 def view_groups():
     conn = sqlite3.connect('fb.db')
     cursor = conn.cursor()
@@ -261,8 +262,9 @@ def view_groups():
         for row in result:
             groupid,group_name,group_desc,creation_date,group_owner,group_members = row
             print(f'ID do Grupo: {groupid}\n{group_name}\n{group_desc}\nCriado em: {creation_date}')
+        print('\n')
     else:
-        print("Não há grupos no momento")
+        print("Não há grupos no momento\n")
 
 
 def my_posts(userid):
@@ -279,6 +281,7 @@ def my_posts(userid):
     for row in result:
         postid,content = row
         print(f'ID do Post: {postid} - {content}')
+    print('\n')
     return 1
 
 def view_events():
@@ -292,8 +295,9 @@ def view_events():
         for row in result:
             eventid,event_name,event_desc,event_location,event_date,event_time,event_owner,event_members = row
             print(f'ID do Evento: {eventid}\n{event_name}\n{event_desc}\nLocal: {event_location}\nData: {event_date} as {event_time}')
+        print('\n')
     else:
-        print("Não há eventos no momento")
+        print("Não há eventos no momento\n")
 
 ######### ------ ######### 
 
@@ -306,7 +310,7 @@ def delete_user(userid):
         WHERE userid = ?'''
     try:
         cursor = cursor.execute(query,(userid,))
-        print(f"Usuário deletado com sucesso.")
+        print(f"Usuário deletado com sucesso.\n")
         conn.commit()
         conn.close()
     except sqlite3.Error as e:
@@ -320,7 +324,7 @@ def delete_event(eventid,username):
         AND event_owner = ?'''
     try:
         cursor = cursor.execute(query,(eventid,username))
-        print(f"Evento excluido com sucesso.")
+        print(f"Evento excluido com sucesso.\n")
         conn.commit()
         conn.close()
     except sqlite3.Error as e:
@@ -334,7 +338,7 @@ def delete_group(groupid,username):
         AND group_owner = ?'''
     try:
         cursor = cursor.execute(query,(groupid,username))
-        print(f"Grupo excluido com sucesso.")
+        print(f"Grupo excluido com sucesso.\n")
         conn.commit()
         conn.close()
     except sqlite3.Error as e:
@@ -362,7 +366,7 @@ def remove_follower(myuser,target):
         except sqlite3.Error as e:
             print(e)
      else:
-        print("Você não segue essa pessoa")
+        print("Você não segue essa pessoa\n")
 
 ######### ------ ######### 
 
@@ -378,7 +382,7 @@ def edit_profile(username,param,value):
     cursor = cursor.execute(query,(value,username))
     conn.commit()
     conn.close()
-    print('Campo alterado com sucesso')
+    print('Campo alterado com sucesso\n')
     return
 
 def edit_post(postid,userid,param,value):
@@ -392,7 +396,7 @@ def edit_post(postid,userid,param,value):
     cursor = cursor.execute(query,(value,postid,userid))
     conn.commit()
     conn.close()
-    print('Post alterado com sucesso')
+    print('Post alterado com sucesso\n')
     return
 
 def edit_event(eventid,username,param,value):
@@ -407,7 +411,7 @@ def edit_event(eventid,username,param,value):
     cursor = cursor.execute(query,(value,eventid,username))
     conn.commit()
     conn.close()
-    print('Evento alterado com sucesso')
+    print('Evento alterado com sucesso\n')
     return
 
 def edit_group(groupid,username,param,value):
@@ -422,7 +426,7 @@ def edit_group(groupid,username,param,value):
     cursor = cursor.execute(query,(value,groupid,username))
     conn.commit()
     conn.close()
-    print('group alterado com sucesso')
+    print('group alterado com sucesso\n')
     return
 
 def deactivate_user(username):
@@ -446,7 +450,7 @@ def activate_user(username):
     cursor = cursor.execute(query,(1,username))
     conn.commit()
     conn.close()
-    print('Usuário ativado')
+    print('Usuário ativado\n')
     return
 
 ######### ------ #########
@@ -469,19 +473,19 @@ def login_user():
             userid,username,fname,lname,pword,bday,email,gender,followers,friends,is_active = row
         if password == pword and is_active == 1:
             print('\n')
-            print(f'-> Usuário logado')
+            print(f'-> Usuário logado\n')
             user = Profile(username,fname,lname,pword,bday,email,gender)
             return user
         elif is_active == 0:
             print('\n')
-            print('Usuário desativado')
+            print('Usuário desativado\n')
             print('\n')
             return False
         conn.close()
         
     else:
         print('\n')
-        print(f'Usuário não encontrado')
+        print(f'Usuário não encontrado\n')
         print('\n')
         conn.close()
         return login_user()
@@ -522,6 +526,7 @@ def see_messages(username):
              if target == username:
                 content = f'Chat de {user}: {content}'
                 print(content)
+         print('\n')
 
 def send_message(username,target,message):
      conn = sqlite3.connect('fb.db')
