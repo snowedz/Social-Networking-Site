@@ -1,3 +1,5 @@
+import sqlite3
+
 class Profile():
     def __init__(self, username, first_name, second_name, password, bday, email, gender):
         self.username = username
@@ -7,7 +9,6 @@ class Profile():
         self.email = email
         self.bday = bday
         self.gender = gender
-
 
 
 class Posts():
@@ -33,3 +34,4 @@ class Groups():
         self.name = name
         self.description = description
         self.date = date
+

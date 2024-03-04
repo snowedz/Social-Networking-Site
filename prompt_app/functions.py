@@ -12,12 +12,9 @@ def welcome():
         return user
 
     if welcome_answer == '2':
-            try:
-                insert_user(Profile)
-                welcome()
-            except NameError:
-                print("-> Você não está logado")
-                welcome()
+            insert_user()
+            menu()
+
     if welcome_answer == '3':
         user = input('-> Digite o username: ')
         activate_user(user)

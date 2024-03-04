@@ -1,9 +1,17 @@
 import sqlite3
 from classes import *
 
+def connect_database():
+    conn = sqlite3.connect('fb.db')
+    cursor = conn.cursor()
+    return conn, cursor
+
+def close_database(conn):
+    conn.close()
+
 ######### Insert Functions #########
         
-def insert_user(Profile):
+def insert_user():
      username = input('Digite o nome do usuário: ')
      if general_search('username','username',username,'users') !=0:
          print('\n-> Usuário já existe\n')
@@ -17,13 +25,11 @@ def insert_user(Profile):
      if general_search('username','email',email,'users'):
          print('Usuário já existe')
          return
-     conn = sqlite3.connect('fb.db')
-     cursor = conn.cursor()
-
+     conn,cursor = connect_database()
      query = '''INSERT INTO users (username, fname, lname, pword, bday, email, gender, is_active) VALUES (?,?,?,?,?,?,?,?)'''
-     cursor = cursor.execute(query,(Profile.username,Profile.first_name,Profile.second_name,Profile.password,Profile.bday,Profile.email,Profile.gender,1))
+     cursor = cursor.execute(query,(username,first_name,second_name,password,bday,email,gender,1))
      if cursor.rowcount > 0:
-        print(f"User '{Profile.username}' criado com sucesso.")
+        print(f"User '{username}' criado com sucesso.")
         conn.commit()
         conn.close()
      else:
@@ -31,8 +37,7 @@ def insert_user(Profile):
 
 def insert_post(Posts,Profile):
      userid = general_search('userid','username',Profile.username,'users')
-     conn = sqlite3.connect('fb.db')
-     cursor = conn.cursor()
+     conn,cursor = connect_database()
      query = '''INSERT INTO posts (userid, content,image,like_count,comments) VALUES (?,?,?,?,?)'''
      cursor = cursor.execute(query,(userid,Posts.content,Posts.image,Posts.like_count,Posts.comments))
      if cursor.rowcount > 0:
@@ -48,8 +53,7 @@ def insert_follower(Profile):
      target = input("Que usuário deseja seguir? ")
      if target in userlist:
         if target != myuser:
-            conn = sqlite3.connect('fb.db')
-            cursor = conn.cursor()
+            conn,cursor = connect_database()
             
             existing_followers = '''SELECT followers FROM users WHERE username = ? '''
             cursor.execute(existing_followers,(target,))
@@ -85,8 +89,7 @@ def insert_follower(Profile):
      print('Usuário não encontrado')
 
 def insert_event(Events):
-     conn = sqlite3.connect('fb.db')
-     cursor = conn.cursor()
+     conn,cursor = connect_database()
      query = '''INSERT INTO events (event_name, event_desc, event_location,event_date,event_time, event_owner, event_members) VALUES (?,?,?,?,?,?,?)'''
      cursor = cursor.execute(query,(Events.name,Events.description, Events.location, Events.date, Events.time, Events.owner, Events.owner))
      if cursor.rowcount > 0:
@@ -97,8 +100,7 @@ def insert_event(Events):
         print("Erro")
 
 def insert_groups(Groups):
-     conn = sqlite3.connect('fb.db')
-     cursor = conn.cursor()
+     conn,cursor = connect_database()
      query = '''INSERT INTO groups (group_name, group_desc, creation_date, group_owner, group_members) VALUES (?,?,?,?,?)'''
      cursor = cursor.execute(query,(Groups.name,Groups.description, Groups.date, Groups.owner, Groups.owner))
      if cursor.rowcount > 0:
@@ -113,8 +115,7 @@ def insert_groups(Groups):
 ######### Search Functions #########
 
 def general_search(type,param,search,table):
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
 
     query = f'''SELECT {type} FROM {table} WHERE {param} = ?'''
 
@@ -129,8 +130,7 @@ def general_search(type,param,search,table):
         return 0
 
 def search_user(username):
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
 
     query = '''SELECT username FROM users WHERE username = ?'''
 
@@ -146,8 +146,7 @@ def search_user(username):
         conn.close()
 
 def my_events(username):
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
 
     query = '''SELECT * FROM events WHERE event_owner = ?'''
 
@@ -162,8 +161,7 @@ def my_events(username):
         print("Não há eventos no momento")
 
 def my_groups(username):
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
 
     query = '''SELECT * FROM groups WHERE group_owner IN (?) OR group_member IN (?);'''
 
@@ -178,8 +176,7 @@ def my_groups(username):
         print("Você não participa de nenhum grupo no momento\n")
 
 def get_following(username):
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
 
     query = f''' SELECT username FROM users WHERE followers LIKE ?'''
     cursor = cursor.execute(query,('%' + username + '%',))
@@ -193,8 +190,7 @@ def get_following(username):
         return conn.closer()
 
 def get_followers(username):
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
 
     query = '''SELECT followers FROM users WHERE username = ?'''
 
@@ -208,8 +204,7 @@ def get_followers(username):
         print(f'Você não é seguido por ninguém\n')
 
 def show_profile(username):
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
 
     query = '''SELECT username,fname,lname,bday,email,gender FROM users WHERE username = ?'''
 
@@ -234,8 +229,7 @@ def show_profile(username):
     #     conn.close()
 
 def view_posts():
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
 
     query = f'''SELECT * FROM posts'''
     cursor = cursor.execute(query)
@@ -252,8 +246,7 @@ def view_posts():
     # print(result)
     print('\n')
 def view_groups():
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
 
     query = f'''SELECT * FROM groups'''
     cursor = cursor.execute(query)
@@ -268,8 +261,7 @@ def view_groups():
 
 
 def my_posts(userid):
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
 
     query = f'''SELECT postid,content FROM posts 
         WHERE userid = ?'''
@@ -285,8 +277,7 @@ def my_posts(userid):
     return 1
 
 def view_events():
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
 
     query = f'''SELECT * FROM events'''
     cursor = cursor.execute(query)
@@ -304,8 +295,7 @@ def view_events():
 ######### Delete Functions #########
 
 def delete_user(userid):
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
     query = '''DELETE FROM users
         WHERE userid = ?'''
     try:
@@ -317,8 +307,7 @@ def delete_user(userid):
         print(e)
 
 def delete_event(eventid,username):
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
     query = '''DELETE FROM events
         WHERE eventid = ?
         AND event_owner = ?'''
@@ -331,8 +320,7 @@ def delete_event(eventid,username):
         print(e)
 
 def delete_group(groupid,username):
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
     query = '''DELETE FROM groups
         WHERE groupid = ?
         AND group_owner = ?'''
@@ -373,8 +361,7 @@ def remove_follower(myuser,target):
 ######### Edit Functions #########
 
 def edit_profile(username,param,value):
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
 
     query = f''' UPDATE users
         SET {param} = ?
@@ -386,8 +373,7 @@ def edit_profile(username,param,value):
     return
 
 def edit_post(postid,userid,param,value):
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
 
     query = f''' UPDATE posts
         SET {param} = ?
@@ -400,8 +386,7 @@ def edit_post(postid,userid,param,value):
     return
 
 def edit_event(eventid,username,param,value):
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
 
     query = f''' UPDATE events
         SET {param} = ?
@@ -415,8 +400,7 @@ def edit_event(eventid,username,param,value):
     return
 
 def edit_group(groupid,username,param,value):
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
 
     query = f''' UPDATE groups
         SET {param} = ?
@@ -430,8 +414,7 @@ def edit_group(groupid,username,param,value):
     return
 
 def deactivate_user(username):
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
     query = '''UPDATE users
         SET is_active = ?
         WHERE username = ?;'''
@@ -442,8 +425,7 @@ def deactivate_user(username):
     return
 
 def activate_user(username):
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
     query = '''UPDATE users
         SET is_active = ?
         WHERE username = ?;'''
@@ -460,8 +442,7 @@ def activate_user(username):
 def login_user():
     username = input('Usuário: ')
     password = input('Senha: ')
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
 
     query = '''SELECT * FROM users WHERE username = ?'''
 
@@ -492,8 +473,7 @@ def login_user():
 
 def list_users():
     userlist = []
-    conn = sqlite3.connect('fb.db')
-    cursor = conn.cursor()
+    conn,cursor = connect_database()
     query = '''SELECT username FROM users '''
 
     cursor = cursor.execute(query)
