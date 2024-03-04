@@ -13,7 +13,7 @@ def welcome():
 
     if welcome_answer == '2':
             insert_user()
-            menu()
+            return welcome()
 
     if welcome_answer == '3':
         user = input('-> Digite o username: ')
