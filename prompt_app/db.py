@@ -42,6 +42,7 @@ def insert_post(Posts,Profile):
      cursor = cursor.execute(query,(userid,Posts.content,Posts.image,Posts.like_count,Posts.comments))
      if cursor.rowcount > 0:
         print(f"Post criado com sucesso.")
+        Profile.notify_observers(Posts)
         conn.commit()
         conn.close()
      else:
@@ -187,7 +188,7 @@ def get_following(username):
         return conn.close()
     else:
         print(f'Você não segue ninguém\n')
-        return conn.closer()
+        return conn.close()
 
 def get_followers(username):
     conn,cursor = connect_database()

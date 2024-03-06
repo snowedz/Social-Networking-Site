@@ -95,6 +95,7 @@ def menu(Profile):
                 content = input('-> O que deseja Postar:')
                 image = input('-> Link de midia (se tiver, caso não, apenas ignore):')
                 post = Posts(Profile,content,image,0,None)
+                Profile.create_post(content,image)
                 insert_post(post,Profile)
                 return menu(Profile)
             
