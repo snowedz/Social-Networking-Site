@@ -35,7 +35,9 @@ def insert_user():
      else:
         print("Erro")
 
-def insert_post(Posts,Profile):
+def insert_post(Profile):
+     content = input('-> O que deseja Postar:')
+     image = input('-> Link de midia (se tiver, caso não, apenas ignore):')
      userid = general_search('userid','username',Profile.username,'users')
      conn,cursor = connect_database()
      query = '''INSERT INTO posts (userid, content,image,like_count,comments) VALUES (?,?,?,?,?)'''
@@ -89,7 +91,13 @@ def insert_follower(Profile):
         return
      print('Usuário não encontrado')
 
-def insert_event(Events):
+def insert_event(Events,Profile):
+     event_name = input('Nome do evento: ')
+     event_description = input('Descrição do evento: ')
+     event_location = input('Local do evento: ')
+     event_date = input('Data do evento: ')
+     event_time = input('Hora que vai acontecer(Formato: HH:MM): ')
+     Events = Events(Profile, event_name, event_description, event_location, event_date, event_time) 
      conn,cursor = connect_database()
      query = '''INSERT INTO events (event_name, event_desc, event_location,event_date,event_time, event_owner, event_members) VALUES (?,?,?,?,?,?,?)'''
      cursor = cursor.execute(query,(Events.name,Events.description, Events.location, Events.date, Events.time, Events.owner, Events.owner))
@@ -361,7 +369,9 @@ def remove_follower(myuser,target):
 
 ######### Edit Functions #########
 
-def edit_profile(username,param,value):
+def edit_profile(username):
+    param = input('1 - Primeiro Nome\n2 - Segundo Nome\n3 - Data de Nascimento\n4 - Gênero\n5 - Endereço de Email\n\nO que deseja mudar?')
+    value = input('Digite o novo valor: ')
     conn,cursor = connect_database()
 
     query = f''' UPDATE users
@@ -373,7 +383,11 @@ def edit_profile(username,param,value):
     print('Campo alterado com sucesso\n')
     return
 
-def edit_post(postid,userid,param,value):
+def edit_post(Profile):
+    userid = general_search('userid','username',Profile.username,'users')
+    postid = input('-> Qual post você quer editar? ')
+    param = input('1 - Conteúdo\n2 - Imagem\n\nO que deseja mudar?')
+    value = input('Digite o novo valor: ') 
     conn,cursor = connect_database()
 
     query = f''' UPDATE posts
@@ -551,4 +565,3 @@ def edit_messages(username,target):
      cursor = conn.execute(query,(f'{username}, {target}','1'))
      result = cursor.fetchall()
      conn.commit()
-     

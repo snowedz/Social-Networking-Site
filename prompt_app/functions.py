@@ -56,96 +56,24 @@ def menu(Profile):
             print('\n')
             choice_2 = input("-> Escolha uma opção: ")
             print('\n')
-            choice_2 = profile_menu.create_menu(choice_2)
-            
-            elif choice_2 == '2':
-                choice_3 = input('1 - Primeiro Nome\n2 - Segundo Nome\n3 - Data de Nascimento\n4 - Gênero\n5 - Endereço de Email\n\nO que deseja mudar?')
-                if choice_3 == '1':
-                    choice_4 = input('-> Novo Primeiro Nome : ')
-                    edit_profile(Profile.username,'fname',choice_4)
-                    return menu(Profile)
-                
-                elif choice_3 == '2':
-                    choice_4 = input('-> Novo Segundo Nome : ')
-                    edit_profile(Profile.username,'lname',choice_4)
-                    return menu(Profile)
-                
-                elif choice_3 == '3':
-                    choice_4 = input('-> Nova Data de nascimento : ')
-                    edit_profile(Profile.username,'bday',choice_4)
-                    return menu(Profile)
-                
-                elif choice_3 == '4':
-                    choice_4 = input('-> Nova Gênero : ')
-                    edit_profile(Profile.username,'bday',choice_4)
-                    return menu(Profile)
-                
-                elif choice_3 == '5':
-                    choice_4 = input('-> Novo Endereço de Email : ')
-                    edit_profile(Profile.username,'email',choice_4)
-
-                    return menu(Profile)
-            
-            elif choice_2 == '3':
-                return deactivate_user(Profile.username)
-            return menu(Profile)
+            choice_2 = profile_menu.create_menu(choice_2)          
 
         elif choice == '2':
             menu_options = ['Ver posts','Criar posts','Editar posts','Menu Anterior']
             for n in range(len(menu_options)):
                 print(f"{n+1} - {menu_options[n]}")
-            choice_2 = input("-> Escolha uma opção: ")
-            if choice_2 == '1':
-                view_posts()
-                return menu(Profile)
-            elif choice_2 == '2':
-                content = input('-> O que deseja Postar:')
-                image = input('-> Link de midia (se tiver, caso não, apenas ignore):')
-                post = Posts(Profile,content,image,0,None)
-                Profile.create_post(content,image)
-                insert_post(post,Profile)
-                return menu(Profile)
+            post_menu = PostsMenuCreator()
+            choice_2 = post_menu.create_menu(choice_2)
             
-            elif choice_2 == '3':
-
-                userid = general_search('userid','username',Profile.username)
-                if my_posts(userid) == 1:
-                    choice_3 = input('-> Qual post você quer editar? ')
-
-                    choice_4 = input('1 - Editar Texto\n2 - Editar Midia')
-
-                    if choice_4 == '1':
-                        choice_4 = 'content'
-                        choice_5 = input('Escreva -> ')
-                        edit_post(choice_3,userid,choice_4,choice_5)
-                    elif choice_4 == '2':
-                        choice_4 = 'image'
-                        choice_5 = input('Link da midia -> ')
-                        edit_post(choice_3,userid,choice_4,choice_5)
-                    return menu(Profile)
-            elif choice_2 == '4':
-                return menu(Profile) 
 
         elif choice == '3':
             menu_options = ['Ver seguidores','Ver quem você segue', 'Seguir usuários', 'Menu Anterior']
             for n in range(len(menu_options)):
                 print(f"{n+1} - {menu_options[n]}")
             choice_2 = input("-> Escolha uma opção: ")
+            followers_menu = FollowersMenuCreator()
+            choice_2 = followers_menu.create_menu(choice_2)
             print('\n')
-
-            
-            if choice_2 == '1':
-                get_followers(Profile.username)
-                return menu(Profile)
-            elif choice_2 == '2':
-                get_following(Profile.username)
-                return menu(Profile)
-            elif choice_2 == '3':
-                insert_follower(Profile)
-                return menu(Profile)
-            elif choice_2 == '4':
-                menu(Profile)
-                return menu(Profile)
 
         elif choice == '4':
             menu_options = ['Ver eventos','Criar eventos','Gerenciar eventos', 'Sair']
@@ -153,21 +81,9 @@ def menu(Profile):
                 print(f"{n+1} - {menu_options[n]}")
             choice_2 = input("-> Escolha uma opção: ")
             print('\n')
+            events_menu = EventsMenuCreator()
+            choice_2 = events_menu.create_menu(choice_2)
 
-
-            if choice_2 == '1':
-                view_events()
-                return menu(Profile)
-            
-            elif choice_2 == '2':
-                event_name = input('Nome do evento: ')
-                event_description = input('Descrição do evento: ')
-                event_location = input('Local do evento: ')
-                event_date = input('Data do evento: ')
-                event_time = input('Hora que vai acontecer(Formato: HH:MM): ')
-                Event = Events(Profile, event_name, event_description, event_location, event_date, event_time)
-                insert_event(Event)
-                return menu(Profile)
             
             elif choice_2 == '3':
                 menu_options = ['Ver meus eventos','Editar Evento','Convidar pessoas', 'Excluir evento','Menu']
