@@ -35,6 +35,13 @@ def welcome():
 
 def menu(Profile):
     main_menu = ['Perfil','Posts','Seguidores','Eventos','Chat','Grupos','Sair']
+    profile_menu = ProfileMenuCreator()
+    posts_menu = PostsMenuCreator()
+    followers_menu = FollowersMenuCreator()
+    events_menu = EventsMenuCreator()
+    messages_menu = MessagesMenuCreator()
+    groups_menu = GroupsMenuCreator()
+
     menu_options = ['Ver Perfil','Editar Perfil','Ver Seguidores','Seguir usuários','Ver posts','Criar Posts','Desativar conta','Sair']
     while True:
         for n in range(len(main_menu)):
@@ -42,15 +49,14 @@ def menu(Profile):
         choice = input("-> O que deseja fazer? ")
         print('\n')
         if choice == '1':
+            profile_menu = ProfileMenuCreator()
             menu_options = ['Ver Perfil','Editar Perfil','Desativar Conta','Menu Anterior']
             for n in range(0,4):
                 print(f"{n+1} - {menu_options[n]}")
             print('\n')
             choice_2 = input("-> Escolha uma opção: ")
             print('\n')
-            if choice_2 == '1':
-                show_profile(Profile.username)
-                return menu(Profile)
+            choice_2 = profile_menu.create_menu(choice_2)
             
             elif choice_2 == '2':
                 choice_3 = input('1 - Primeiro Nome\n2 - Segundo Nome\n3 - Data de Nascimento\n4 - Gênero\n5 - Endereço de Email\n\nO que deseja mudar?')
