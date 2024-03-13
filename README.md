@@ -31,3 +31,7 @@ social interactions, content sharing, and network building.
     - Private Messaging
     - Group Creation and Management
     - Event Planning and Management
+ 
+### Quality Delivery
+- [Prompt_app](https://github.com/snowedz/Social-Networking-Site/tree/main/prompt_app)
+- Implemented the factory pattern to the menu functions
