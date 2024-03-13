@@ -34,14 +34,9 @@ def welcome():
 ######### Menu Options #########
 
 def menu(Profile):
+    user = Profile
+    print(user)
     main_menu = ['Perfil','Posts','Seguidores','Eventos','Chat','Grupos','Sair']
-    profile_menu = ProfileMenuCreator()
-    posts_menu = PostsMenuCreator()
-    followers_menu = FollowersMenuCreator()
-    events_menu = EventsMenuCreator()
-    messages_menu = MessagesMenuCreator()
-    groups_menu = GroupsMenuCreator()
-
     menu_options = ['Ver Perfil','Editar Perfil','Ver Seguidores','Seguir usuários','Ver posts','Criar Posts','Desativar conta','Sair']
     while True:
         for n in range(len(main_menu)):
@@ -56,14 +51,15 @@ def menu(Profile):
             print('\n')
             choice_2 = input("-> Escolha uma opção: ")
             print('\n')
-            choice_2 = profile_menu.create_menu(choice_2)          
+            choice_2 = profile_menu.create_menu(choice_2,user)          
 
         elif choice == '2':
             menu_options = ['Ver posts','Criar posts','Editar posts','Menu Anterior']
             for n in range(len(menu_options)):
                 print(f"{n+1} - {menu_options[n]}")
-            post_menu = PostsMenuCreator()
-            choice_2 = post_menu.create_menu(choice_2)
+            posts_menu = PostsMenuCreator()
+            choice_2 = input("-> Escolha uma opção: ")
+            choice_2 = posts_menu.create_menu(choice_2,user)
             
 
         elif choice == '3':
@@ -72,75 +68,17 @@ def menu(Profile):
                 print(f"{n+1} - {menu_options[n]}")
             choice_2 = input("-> Escolha uma opção: ")
             followers_menu = FollowersMenuCreator()
-            choice_2 = followers_menu.create_menu(choice_2)
+            choice_2 = followers_menu.create_menu(choice_2,user)
             print('\n')
 
         elif choice == '4':
-            menu_options = ['Ver eventos','Criar eventos','Gerenciar eventos', 'Sair']
+            menu_options = ['Ver eventos','Criar eventos','Editar Evento','Convidar Pessoas','Excluir Evento' 'Sair']
             for n in range(len(menu_options)):
                 print(f"{n+1} - {menu_options[n]}")
             choice_2 = input("-> Escolha uma opção: ")
             print('\n')
             events_menu = EventsMenuCreator()
-            choice_2 = events_menu.create_menu(choice_2)
-
-            
-            elif choice_2 == '3':
-                menu_options = ['Ver meus eventos','Editar Evento','Convidar pessoas', 'Excluir evento','Menu']
-                for n in range(len(menu_options)):
-                    print(f"{n+1} - {menu_options[n]}")
-                choice_3 = input("-> Escolha uma opção: ")
-                print('\n')
-                    
-                if choice_3 == '1':
-                    my_events(Profile.username)
-                    
-                elif choice_3 == '2':
-                    my_events(Profile.username)
-                    eventid = input('-> ID do evento que deseja mudar: ')
-                    menu_options = ['Nome do evento','Descrição','Local','Data','Hora','sair']
-                    for n in range(len(menu_options)):
-                        print(f"{n+1} - {menu_options[n]}")
-                    print('\n')
-                    choice_4 = input('-> O que deseja mudar? ')
-                    print('\n')
-                    if choice_4 == '1':
-                        new_name = input('-> Novo nome do evento: ')
-                        edit_event(eventid,Profile.username,'event_name',new_name)
-                    elif choice_4 == '2':
-                        new_desc = input('-> Nova descrição: ')
-                        edit_event(eventid,Profile.username,'event_description',new_desc)
-                    elif choice_4 == '3':
-                        new_local = input('-> Nova localização: ')
-                        edit_event(eventid,Profile.username,'event_location',new_local)
-                    elif choice_4 == '4':
-                        new_date = input('-> Nova data: ')
-                        edit_event(eventid,Profile.username,'event_date',new_date)
-                    elif choice_4 == '4':
-                        new_time = input('Novo horário: ')
-                        edit_event(eventid,Profile.username,'event_time',new_time)
-                    elif choice_4 == '5':
-                        menu(Profile)
-
-                elif choice_3 == '3':
-                    list_users()
-                    choice_4 = input('-> Qual usuário você quer convidar? ')
-                    print('\n')
-                    # invite_users() ### need to implement notifications and accepting or decline instances
-                
-                elif choice_3 == '4':
-                    my_events()
-                    eventid = input('-> Qual ID do evento que você quer deletar? ')
-                    print('\n')
-                    delete_event(eventid,Profile.username)
-                
-                elif choice_3 == '5':
-                    return menu(Profile)
-            
-            elif choice_2 == '4':
-                return menu(Profile)
-            
-
+            choice_2 = events_menu.create_menu(choice_2,user)
 
 
         elif choice == '5':
@@ -148,66 +86,17 @@ def menu(Profile):
             for n in range(len(menu_options)):
                 print(f"{n+1} - {menu_options[n]}")
             choice_2 = input('-> Selecione uma opção: ')
-            if choice_2 == '1':
-                see_messages(Profile.username)
-                return menu(Profile)
-            elif choice_2 == '2':
-                list_users()
-                target = input('-> Para quem? ')
-                message = input('-> ')
-                send_message(Profile.username,target,message)
-                return menu(Profile)
-        
+            messages_menu = MessagesMenuCreator()
+            choice_2 = messages_menu.create_menu(choice_2,user)
+
         elif choice == '6':
-            menu_options = ['Ver Grupos','Criar Grupos','Gerenciar grupos', 'Sair']
+            menu_options = ['Ver Grupos','Criar Grupos','Editar grupo', 'Convidar Pessoas para o Grupo','Excluir Grupo', 'Sair']
             for n in range(len(menu_options)):
                 print(f"{n+1} - {menu_options[n]}")
             choice_2 = input("-> Escolha uma opção: ")
+            groups_menu = GroupsMenuCreator()
+            choice_2 = groups_menu.create_menu(choice_2,user)
 
-            if choice_2 == '1':
-                view_groups()
-                return menu(Profile)
-            
-            elif choice_2 == '2':
-                group_name = input('-> Nome do grupo: ')
-                group_description = input('-> Descrição do grupo: ')
-                group_date = input('-> Data de criação do grupo: ')
-                Group = Groups(Profile, group_name, group_description, group_date)
-                insert_groups(Group)
-                return menu(Profile)
-            
-            elif choice_2 == '3':
-                menu_options = ['Ver meus grupos','Editar grupo', 'Convidar pessoas para o grupo' 'Excluir grupo','Menu']
-                for n in range(len(menu_options)):
-                    print(f"{n+1} - {menu_options[n]}")
-                choice_3 = input("-> Escolha uma opção: ")
-                    
-                if choice_3 == '1':
-                    my_groups(Profile.username)
-                    
-                elif choice_3 == '2':
-                    my_groups(Profile.username)
-                    groupid = input('-> ID do grupo que deseja mudar: ')
-                    menu_options = ['Nome do grupo','Descrição','sair']
-                    for n in range(len(menu_options)):
-                        print(f"{n+1} - {menu_options[n]}")
-                    choice_4 = input('-> O que deseja mudar? ')
-                    if choice_4 == '1':
-                        new_name = input('-> Novo nome do grupo: ')
-                        edit_group(groupid,Profile.username,'group_name',new_name)
-                    elif choice_4 == '2':
-                        new_desc = input('-> Nova descrição: ')
-                        edit_group(groupid,Profile.username,'group_desc',new_desc)
-                    elif choice_4 == '3':
-                        menu(Profile)
-                
-                elif choice_3 == '4':
-                    my_groups(Profile.username)
-                    groupid = input('-> Qual ID do grupo que você quer deletar? ')
-                    delete_group(groupid,Profile.username)
-                    print("Grupo deletado com sucesso")
-                    return menu(Profile)
-        
         elif choice == '7':
             print('-> Saindo')
             return False
@@ -217,129 +106,194 @@ class MenuOption(ABC):
     def execute(self):
         pass
     
-class ViewProfile(MenuOption, Profile):
+class ViewProfile(MenuOption,Profile):
+    def __init__(self,Profile):
+        self.username = Profile.username
+
     def execute(self):
-        return show_profile(Profile.username)
+        return show_profile(self.username)
 
 class EditProfile(MenuOption,Profile):
+    def __init__(self,Profile):
+        self.username = Profile.username
+
     def execute(self):
-        return edit_profile()
+        return edit_profile(self.username)
 
 class DeactivateUser(MenuOption,Profile):
-    def execute(self):
-        return deactivate_user() 
+    def __init__(self,Profile):
+        self.username = Profile.username
 
-class ProfileMenuCreator(Profile):
-    def create_menu(self, choice):
+    def execute(self):
+        return deactivate_user(self.username) 
+
+class ProfileMenuCreator():
+    def create_menu(self, choice,user):
         options = {
-            '1': ViewProfile(Profile),
-            '2': EditProfile(Profile),
-            '3': DeactivateUser(Profile)
+            '1': ViewProfile(user),
+            '2': EditProfile(user),
+            '3': DeactivateUser(user)
         }
         return options[choice].execute()
 
 class ViewPosts(MenuOption,Profile):
+    def __init__(self,Profile):
+        self.username = Profile.username
+
     def execute(self):
         return view_posts()
 
 class InsertPost(MenuOption,Profile):
-        def execute(self):
-            return insert_post(Profile)
+    def __init__(self,Profile):
+        self.username = Profile.username
+
+    def execute(self):
+        return insert_post(self.username)
 
 class EditPost(MenuOption,Profile):
-    def execute(self):
-        return edit_post(Profile)
+    def __init__(self,Profile):
+        self.username = Profile.username
 
-class PostsMenuCreator(Profile):
-    def create_menu(self, choice):
+    def execute(self):
+        return edit_post(self.username)
+
+class PostsMenuCreator():
+    def create_menu(self, choice, user):
         options = {
-            '1': ViewPosts(Profile),
-            '2': InsertPost(Profile),
-            '3': EditPost(Profile)
+            '1': ViewPosts(user),
+            '2': InsertPost(user),
+            '3': EditPost(user)
         }
         return options[choice].execute()
 
 class ViewFollowers(MenuOption,Profile):
+    def __init__(self,Profile):
+        self.username = Profile.username
+
     def execute(self):
-        return get_followers()
+        return get_followers(self.username)
     
 class ViewFollowing(MenuOption,Profile):
+    def __init__(self,Profile):
+        self.username = Profile.username
+
     def execute(self):
-        return get_following()
+        return get_following(self.username)
 
 class InsertFollower(MenuOption,Profile):
-    def execute(self):
-        return insert_follower()
+    def __init__(self,Profile):
+        self.username = Profile.username
 
-class FollowersMenuCreator(Profile):
-    def create_menu(self, choice):
+    def execute(self):
+        return insert_follower(self.username)
+
+class FollowersMenuCreator():
+    def create_menu(self, choice,user):
         options = {
-            '1': ViewFollowers(Profile),
-            '2': ViewFollowing(Profile),
-            '3': InsertFollower(Profile)
+            '1': ViewFollowers(user),
+            '2': ViewFollowing(user),
+            '3': InsertFollower(user)
         }
         return options[choice].execute()
 
 class ViewEvents(MenuOption,Profile):
+    def __init__(self,Profile):
+        self.username = Profile.username
+
     def execute(self):
         return view_events()
 
 class InsertEvent(MenuOption,Profile):
+    def __init__(self,Profile):
+        self.username = Profile.username
+
     def execute(self):
-        return insert_event()
+        return insert_event(self.username)
 
 class EditEvent(MenuOption,Profile):
-    def execute(self):
-        return edit_event()
+    def __init__(self,Profile):
+        self.username = Profile.username
 
-class EventsMenuCreator(Profile):
-    def create_menu(self, choice):
+    def execute(self):
+        return edit_event(self.username)
+
+class InvitePeople(MenuOption,Profile):
+    def __init__(self,Profile):
+        self.username = Profile.username
+
+    def execute(self):
+        return invite_user_to_event(self.username)
+
+class EventsMenuCreator():
+    def create_menu(self, choice, user):
         options = {
-            '1': ViewEvents(Profile),
-            '2': InsertEvent(Profile),
-            '3': EditEvent(Profile)
+            '1': ViewEvents(user),
+            '2': InsertEvent(user),
+            '3': EditEvent(user),
+            '4': InvitePeople(user)
         }
         return options[choice].execute()
 
 class SeeMessages(MenuOption,Profile):
+    def __init__(self,Profile):
+        self.username = Profile.username
+
     def execute(self):
-        return see_messages()
+        return see_messages(self.username)
 
 class SendMessage(MenuOption,Profile):
-    def execute(self):
-        return send_message()
+    def __init__(self,Profile):
+        self.username = Profile.username
 
-class MessagesMenuCreator(Profile):
-    def create_menu(self, choice):
+    def execute(self):
+        return send_message(self.username)
+
+class MessagesMenuCreator():
+    def __init__(self,Profile):
+        self.username = Profile.username
+
+    def create_menu(self, choice, user):
         options = {
-            '1': SeeMessages(Profile),
-            '2': SendMessage(Profile)
+            '1': SeeMessages(user),
+            '2': SendMessage(user)
         }
         return options[choice].execute()
 
 class ViewGroups(MenuOption,Profile):
+    def __init__(self,Profile):
+        self.username = Profile.username
+
     def execute(self):
         return view_groups()
 
 class InsertGroups(MenuOption,Profile):
+    def __init__(self,Profile):
+        self.username = Profile.username
+
     def execute(self):
-        return insert_groups()
+        return insert_groups(self.username)
 
 class EditGroup(MenuOption,Profile):
+    def __init__(self,Profile):
+        self.username = Profile.username
+
     def execute(self):
-        return edit_group()
+        return edit_group(self.username)
 
 class DeleteGroup(MenuOption,Profile):
+    def __init__(self,Profile):
+        self.username = Profile.username
+        
     def execute(self):
-        return delete_group()
+        return delete_group(self.username)
 
-class GroupsMenuCreator(Profile):
-    def create_menu(self, choice):
+class GroupsMenuCreator():
+    def create_menu(self, choice, user):
         options = {
-            '1': ViewGroups(Profile),
-            '2': InsertGroups(Profile),
-            '3': EditGroup(Profile),
-            '4': DeleteGroup(Profile)
+            '1': ViewGroups(user),
+            '2': InsertGroups(user),
+            '3': EditGroup(user),
+            '4': DeleteGroup(user)
         }
         return options[choice].execute()
     

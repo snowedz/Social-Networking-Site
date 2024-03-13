@@ -35,24 +35,23 @@ def insert_user():
      else:
         print("Erro")
 
-def insert_post(Profile):
+def insert_post(username):
      content = input('-> O que deseja Postar:')
      image = input('-> Link de midia (se tiver, caso não, apenas ignore):')
-     userid = general_search('userid','username',Profile.username,'users')
+     userid = general_search('userid','username',username,'users')
      conn,cursor = connect_database()
      query = '''INSERT INTO posts (userid, content,image,like_count,comments) VALUES (?,?,?,?,?)'''
-     cursor = cursor.execute(query,(userid,Posts.content,Posts.image,Posts.like_count,Posts.comments))
+     cursor = cursor.execute(query,(userid,content,image,0,0))
      if cursor.rowcount > 0:
         print(f"Post criado com sucesso.")
-        Profile.notify_observers(Posts)
         conn.commit()
         conn.close()
      else:
         print("Erro")
 
-def insert_follower(Profile):
+def insert_follower(username):
      userlist = list_users()
-     myuser = Profile.username
+     myuser = username
      target = input("Que usuário deseja seguir? ")
      if target in userlist:
         if target != myuser:
@@ -91,16 +90,15 @@ def insert_follower(Profile):
         return
      print('Usuário não encontrado')
 
-def insert_event(Events,Profile):
+def insert_event(username):
      event_name = input('Nome do evento: ')
      event_description = input('Descrição do evento: ')
      event_location = input('Local do evento: ')
      event_date = input('Data do evento: ')
      event_time = input('Hora que vai acontecer(Formato: HH:MM): ')
-     Events = Events(Profile, event_name, event_description, event_location, event_date, event_time) 
      conn,cursor = connect_database()
      query = '''INSERT INTO events (event_name, event_desc, event_location,event_date,event_time, event_owner, event_members) VALUES (?,?,?,?,?,?,?)'''
-     cursor = cursor.execute(query,(Events.name,Events.description, Events.location, Events.date, Events.time, Events.owner, Events.owner))
+     cursor = cursor.execute(query,(event_name,event_description, event_location, event_date, event_time, username, username))
      if cursor.rowcount > 0:
         print(f"Evento criado com sucesso.")
         conn.commit()
@@ -108,10 +106,13 @@ def insert_event(Events,Profile):
      else:
         print("Erro")
 
-def insert_groups(Groups):
+def insert_groups(username):
+     group_name = input('-> Nome do grupo: ')
+     group_description = input('-> Descrição do grupo: ')
+     group_date = input('-> Data de criação do grupo: ')
      conn,cursor = connect_database()
      query = '''INSERT INTO groups (group_name, group_desc, creation_date, group_owner, group_members) VALUES (?,?,?,?,?)'''
-     cursor = cursor.execute(query,(Groups.name,Groups.description, Groups.date, Groups.owner, Groups.owner))
+     cursor = cursor.execute(query,(group_name,group_description, group_date, username, username))
      if cursor.rowcount > 0:
         print(f"Grupo criado com sucesso.")
         conn.commit()
@@ -315,7 +316,9 @@ def delete_user(userid):
     except sqlite3.Error as e:
         print(e)
 
-def delete_event(eventid,username):
+def delete_event(username):
+    my_events(username)
+    eventid = input('-> Qual evento você quer excluir? ')
     conn,cursor = connect_database()
     query = '''DELETE FROM events
         WHERE eventid = ?
@@ -328,7 +331,9 @@ def delete_event(eventid,username):
     except sqlite3.Error as e:
         print(e)
 
-def delete_group(groupid,username):
+def delete_group(username):
+    my_groups(username)
+    groupid = input('-> Qual grupo você quer deletar? ')
     conn,cursor = connect_database()
     query = '''DELETE FROM groups
         WHERE groupid = ?
@@ -383,8 +388,8 @@ def edit_profile(username):
     print('Campo alterado com sucesso\n')
     return
 
-def edit_post(Profile):
-    userid = general_search('userid','username',Profile.username,'users')
+def edit_post(username):
+    userid = general_search('userid','username',username,'users')
     postid = input('-> Qual post você quer editar? ')
     param = input('1 - Conteúdo\n2 - Imagem\n\nO que deseja mudar?')
     value = input('Digite o novo valor: ') 
@@ -400,7 +405,11 @@ def edit_post(Profile):
     print('Post alterado com sucesso\n')
     return
 
-def edit_event(eventid,username,param,value):
+def edit_event(username):
+    my_events(username)
+    eventid = input('-> Qual evento você quer editar? ')
+    param = input('1 - Nome do Evento\n2 - Descrição do Evento\n3 - Local do Evento\n4 - Data do Evento\n5 - Hora do Evento\n\nO que deseja mudar?')
+    value = input('Digite o novo valor: ')
     conn,cursor = connect_database()
 
     query = f''' UPDATE events
@@ -414,7 +423,11 @@ def edit_event(eventid,username,param,value):
     print('Evento alterado com sucesso\n')
     return
 
-def edit_group(groupid,username,param,value):
+def edit_group(username):
+    my_groups(username)
+    groupid = input('-> Qual grupo você quer editar? ')
+    param = input('1 - Nome do Grupo\n2 - Descrição do Grupo\n3 - Data de Criação\n\nO que deseja mudar?')
+    value = input('Digite o novo valor: ')
     conn,cursor = connect_database()
 
     query = f''' UPDATE groups
@@ -450,6 +463,39 @@ def activate_user(username):
     print('Usuário ativado\n')
     return
 
+def invite_user_to_event(username):
+    my_events(username)
+    eventid = input('-> Qual evento você quer convidar alguém? ')
+    target = input('-> Quem você quer convidar? ')
+    conn,cursor = connect_database()
+
+    query = '''SELECT event_members FROM events WHERE eventid = ?'''
+    cursor = cursor.execute(query,(eventid,))
+    event_members = cursor.fetchone()
+    event_members = event_members[0]
+    if event_members != None:
+        event_members = event_members.split()
+        if target in event_members:
+            print('Usuário já está no evento')
+            return
+        updated_members = f"{event_members}, {target}"
+        query = '''UPDATE events
+            SET event_members = ?
+            WHERE eventid = ?;'''
+        cursor = cursor.execute(query,(updated_members,eventid))
+        conn.commit()
+        conn.close()
+        print('Usuário convidado\n')
+        return
+    else:
+        query = '''UPDATE events
+            SET event_members = ?
+            WHERE eventid = ?;'''
+        cursor = cursor.execute(query,(target,eventid))
+        conn.commit()
+        conn.close()
+        print('Usuário convidado\n')
+        return
 ######### ------ #########
 
 ######### Misc Functions #########
@@ -523,7 +569,10 @@ def see_messages(username):
                 print(content)
          print('\n')
 
-def send_message(username,target,message):
+def send_message(username):
+     list_users()
+     target = input('-> Para quem? ')
+     message = input('-> ')
      conn = sqlite3.connect('fb.db')
      cursor = conn.cursor()
 
