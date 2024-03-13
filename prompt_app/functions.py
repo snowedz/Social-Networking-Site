@@ -1,5 +1,6 @@
 from classes import *
 from db import *
+from abc import ABC,abstractmethod
 
 ######### Display welcome menu and menu options #########
 
@@ -288,4 +289,135 @@ def menu(Profile):
         elif choice == '7':
             print('-> Saindo')
             return False
+    
+class MenuOption(ABC):
+    @abstractmethod
+    def execute(self):
+        pass
+    
+class ViewProfile(MenuOption, Profile):
+    def execute(self):
+        return show_profile(Profile.username)
+
+class EditProfile(MenuOption,Profile):
+    def execute(self):
+        return edit_profile()
+
+class DeactivateUser(MenuOption,Profile):
+    def execute(self):
+        return deactivate_user() 
+
+class ProfileMenuCreator(Profile):
+    def create_menu(self, choice):
+        options = {
+            '1': ViewProfile(Profile),
+            '2': EditProfile(Profile),
+            '3': DeactivateUser(Profile)
+        }
+        return options[choice].execute()
+
+class ViewPosts(MenuOption,Profile):
+    def execute(self):
+        return view_posts()
+
+class InsertPost(MenuOption,Profile):
+        def execute(self):
+            return insert_post(Profile)
+
+class EditPost(MenuOption,Profile):
+    def execute(self):
+        return edit_post(Profile)
+
+class PostsMenuCreator(Profile):
+    def create_menu(self, choice):
+        options = {
+            '1': ViewPosts(Profile),
+            '2': InsertPost(Profile),
+            '3': EditPost(Profile)
+        }
+        return options[choice].execute()
+
+class ViewFollowers(MenuOption,Profile):
+    def execute(self):
+        return get_followers()
+    
+class ViewFollowing(MenuOption,Profile):
+    def execute(self):
+        return get_following()
+
+class InsertFollower(MenuOption,Profile):
+    def execute(self):
+        return insert_follower()
+
+class FollowersMenuCreator(Profile):
+    def create_menu(self, choice):
+        options = {
+            '1': ViewFollowers(Profile),
+            '2': ViewFollowing(Profile),
+            '3': InsertFollower(Profile)
+        }
+        return options[choice].execute()
+
+class ViewEvents(MenuOption,Profile):
+    def execute(self):
+        return view_events()
+
+class InsertEvent(MenuOption,Profile):
+    def execute(self):
+        return insert_event()
+
+class EditEvent(MenuOption,Profile):
+    def execute(self):
+        return edit_event()
+
+class EventsMenuCreator(Profile):
+    def create_menu(self, choice):
+        options = {
+            '1': ViewEvents(Profile),
+            '2': InsertEvent(Profile),
+            '3': EditEvent(Profile)
+        }
+        return options[choice].execute()
+
+class SeeMessages(MenuOption,Profile):
+    def execute(self):
+        return see_messages()
+
+class SendMessage(MenuOption,Profile):
+    def execute(self):
+        return send_message()
+
+class MessagesMenuCreator(Profile):
+    def create_menu(self, choice):
+        options = {
+            '1': SeeMessages(Profile),
+            '2': SendMessage(Profile)
+        }
+        return options[choice].execute()
+
+class ViewGroups(MenuOption,Profile):
+    def execute(self):
+        return view_groups()
+
+class InsertGroups(MenuOption,Profile):
+    def execute(self):
+        return insert_groups()
+
+class EditGroup(MenuOption,Profile):
+    def execute(self):
+        return edit_group()
+
+class DeleteGroup(MenuOption,Profile):
+    def execute(self):
+        return delete_group()
+
+class GroupsMenuCreator(Profile):
+    def create_menu(self, choice):
+        options = {
+            '1': ViewGroups(Profile),
+            '2': InsertGroups(Profile),
+            '3': EditGroup(Profile),
+            '4': DeleteGroup(Profile)
+        }
+        return options[choice].execute()
     

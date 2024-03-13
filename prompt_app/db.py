@@ -551,3 +551,4 @@ def edit_messages(username,target):
      cursor = conn.execute(query,(f'{username}, {target}','1'))
      result = cursor.fetchall()
      conn.commit()
+     
